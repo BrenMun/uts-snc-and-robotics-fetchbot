@@ -41,11 +41,11 @@ export ROS_IP = VM_IP
 In the terminal, the MATLAB command line can be run using the following command:
 
 ```
-matlab -nosplash -nodesktop -sd /home/brendan/git/uts-snc-and-robotics-fetchbot/fetchbot_src
+matlab -nosplash -nodesktop -sd /{git directory}/uts-snc-and-robotics-fetchbot/fetchbot_src
 ```
 An extension can be added to VSCode for MATLAB language support. One specific extension "Matlab Code Run" allows the ability to run MATLAB files using
 Ctr+Shift+P and typing "Run Matlab file", which executes the following command:
 
 ```
-matlab -nosplash -nodesktop -sd /home/brendan/git/uts-snc-and-robotics-fetchbot/fetchbot_src -r "run('./filename.m');"
+matlab -nosplash -nodesktop -sd /{git directory}/uts-snc-and-robotics-fetchbot/fetchbot_src -r "run('./filename.m');"
 ```
