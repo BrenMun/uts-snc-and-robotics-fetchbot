@@ -10,9 +10,11 @@
   <license>TODO</license>
   <buildtool_depend>catkin</buildtool_depend>
   
+  <!-- Add fetch_gazebo pkg -->
   <buildtool_depend>fetch_gazebo</buildtool_depend>
   <exec_depend>fetch_gazebo</exec_depend>
 
+  <!-- Add fetch_moveit_config pkg -->
   <buildtool_depend>fetch_moveit_config</buildtool_depend>
   <exec_depend>fetch_moveit_config</exec_depend>
 </package>
