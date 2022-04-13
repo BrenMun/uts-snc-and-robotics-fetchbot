@@ -54,11 +54,11 @@ matlab -nosplash -nodesktop -sd /{git directory}/uts-snc-and-robotics-fetchbot/f
 
 ## Running the simulation
 
-Run the gazebo environment for simple grasping:
+Run the gazebo environment with the launch file created in this repo. It uses "simple_grasp.launch" (makes the simulated environment) and "move_group.launch" (used for controlling fetch), which are launch files from the "fetch_gazebo" and "fetch_moveit_config" packages.
 
-```
+``` 
 cd catkin_ws
-roslaunch fetch_gazebo simple_grasp.launch
+roslaunch fetchbot setupFetchSim.launch
 ```
 
 Run RVIZ to visualise sensing data:
