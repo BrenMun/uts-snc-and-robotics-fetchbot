@@ -1,1 +1,1 @@
-The purpose of this directory is to store and access data between difference scripts.
+The purpose of this directory is to store and access data between different scripts.
