@@ -49,3 +49,27 @@ Ctr+Shift+P and typing "Run Matlab file", which executes the following command:
 ```
 matlab -nosplash -nodesktop -sd /{git directory}/uts-snc-and-robotics-fetchbot/fetchbot_src -r "run('./filename.m');"
 ```
+
+# Running Fetch Simulation (Gazebo and RVIZ)
+
+## Running the simulation
+
+Run the gazebo environment for simple grasping:
+
+```
+cd catkin_ws
+roslaunch fetch_gazebo simple_grasp.launch
+```
+
+Run RVIZ to visualise sensing data:
+
+```
+rosrun rviz rviz
+```
+
+## Showing Sensing Data in RVIZ
+
+- **RobotModel:** Displays >> global options, set Fixed Frame to "torso_fixed_link" or "base_link" depending what you want set at origin. Then press "add" and select "RobotModel"
+- **Image:** press "add" and select "Image". From this go to Displays >> Image and select "/head_camera/rgb/image_raw" for Image Topic. This will show a raw image captured by the fetch's head camera in RVIZ.
+- **PointCloud2:** press "add" again and select PointCloud2. Under Displays >> PointCloud2 select either "/head_camera/depth_downsample/points" or ""/head_camera/depth_registered/points" for Topic. This will show the pointclouds detected by fetch's head camera in RVIZ.
+
