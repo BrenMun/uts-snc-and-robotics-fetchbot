@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>fetchbot</name>
-  <version>0.9.2</version>
+  <version>1.0</version>
   <description>
     Package for SnC and Robotics Assignment.
   </description>
