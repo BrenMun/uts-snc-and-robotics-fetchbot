@@ -23,7 +23,7 @@ int main(int argc, char **argv)
   cv::namedWindow("view");
 
   image_transport::ImageTransport it(nh);
-  image_transport::Subscriber sub = it.subscribe("/head_camera/rgb/image_raw", 1, imageCallback);
+  image_transport::Subscriber sub = it.subscribe("/sensor_msgs/Image", 1, imageCallback);
   ros::spin();
   cv::destroyWindow("view");
 }
