@@ -5,8 +5,8 @@ cmake_minimum_required (VERSION 2.8.13)
 project (fetchbot)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-include_directories(/opt/ros/noetic/include)
-link_directories(/opt/ros/noetic/include)
+include_directories(/opt/ros/${ROS_DISTRO}/include)
+link_directories(/opt/ros/${ROS_DISTRO}/include)
 
 #include opencv
 find_package(catkin REQUIRED COMPONENTS
