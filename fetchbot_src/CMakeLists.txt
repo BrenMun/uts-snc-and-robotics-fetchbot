@@ -8,6 +8,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 include_directories(/opt/ros/${ROS_DISTRO}/include)
 link_directories(/opt/ros/${ROS_DISTRO}/include)
 
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 #include opencv
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
@@ -15,8 +18,6 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   OpenCV
 )
-find_package(OpenCV REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIRS})
 
 # CMake will create your library, add the cpp files needed (file will be "lib<name>.a")
 add_library(fetchbot STATIC main.cpp imageListener.cpp)
