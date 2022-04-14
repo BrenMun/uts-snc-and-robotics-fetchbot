@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 2.8.13)
 
 # Change project name
 project (fetchbot)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 include_directories(/opt/ros/${ROS_DISTRO}/include)
 link_directories(/opt/ros/${ROS_DISTRO}/include)
@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   image_transport
   OpenCV
+  pcl_ros
 )
 
 # CMake will create your library, add the cpp files needed (file will be "lib<name>.a")
