@@ -16,6 +16,6 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "sub_pcl");
   ros::NodeHandle nh;
-  ros::Subscriber sub = nh.subscribe<PointCloud>("points2", 1, callback);
+  ros::Subscriber sub = nh.subscribe<PointCloud>("/head_camera/depth_registered/points", 1, callback);
   ros::spin();
 }
