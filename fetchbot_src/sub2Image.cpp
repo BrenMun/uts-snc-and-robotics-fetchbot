@@ -5,6 +5,6 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "image_converter");
   ImageConverter ic;
-  ros::spinOnce();
+  ros::spinOnce();ros::spinOnce();
   return 0;
 }
