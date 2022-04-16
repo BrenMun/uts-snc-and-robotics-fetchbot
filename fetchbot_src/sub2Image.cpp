@@ -5,12 +5,12 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "ImageConverter.h"
-#include <experimental/filesystem>
+#include <filesystem>
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "image_converter");
   ImageConverter ic;
-  while(!std::experimental::filesystem::exists("data/my_image0.png")) ros::spin();
+  while(!std::filesystem::exists("data/my_image0.png")) ros::spin();
   return 0;
 }
