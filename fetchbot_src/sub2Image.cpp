@@ -16,7 +16,9 @@ bool file_exists (std::string filename) {
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "image_converter");
-  ImageConverter ic;
-  ros::spin();
+    while(ros::ok()){
+    ImageConverter ic;
+    ros::spinOnce();
+  }
   return 0;
 } 

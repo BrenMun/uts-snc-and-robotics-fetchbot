@@ -6,6 +6,15 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <sstream>
 
+bool file_exists (std::string filename) {
+  std::string s(filename);
+  char p[s.length()]; 
+  int i;
+  for (i = 0; i < sizeof(p); i++) p[i] = s[i];
+  struct stat   buffer;   
+  return (stat (p, &buffer) == 0);
+}
+
 class ImageConverter
 {
   ros::NodeHandle nh_;
@@ -42,5 +51,6 @@ public:
     sstream << "../data/my_image" << image_count << ".png" ;
     cv::imwrite( sstream.str(),  cv_ptr->image );
     image_count++;
+    if (file_exists("../data/my_image0.png")) ros::shutdown();
   }
 };
