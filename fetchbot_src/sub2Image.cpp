@@ -8,7 +8,7 @@ int main(int argc, char** argv)
   ifile.open("../data/my_image0.png");
   ros::init(argc, argv, "image_converter");
   ImageConverter ic;
-  while(ifile){
+  while(!ifile){
     ros::spinOnce();
   }
   ros::shutdown();
