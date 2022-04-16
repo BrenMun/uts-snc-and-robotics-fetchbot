@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "image_converter");
   ImageConverter ic;
-  if (file_exists("../image0.png")) ros::shutdown();
+  if (file_exists("data/image0.png")) ros::shutdown();
   ros::spin();
   return 0;
 }
