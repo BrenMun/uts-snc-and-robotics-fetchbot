@@ -4,14 +4,12 @@
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <sstream>
 
 class ImageConverter
 {
   ros::NodeHandle nh_;
   image_transport::ImageTransport it_;
   image_transport::Subscriber image_sub_;
-  image_transport::Publisher image_pub_;
 
 public:
   ImageConverter()
@@ -38,10 +36,7 @@ public:
       ROS_ERROR("cv_bridge exception: %s", e.what());
       return;
     }
-    static int image_count = 0;
-    std::stringstream sstream;
-    sstream << "../data/image" << image_count << ".png" ;
-    cv::imwrite( sstream.str(),  cv_ptr->image );
-    image_count++;
+    cv::imwrite("../data/image.png",  cv_ptr->image );
+    ros::shutdown();
   }
 };
