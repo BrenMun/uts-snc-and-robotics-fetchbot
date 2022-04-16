@@ -21,7 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 # CMake will create your library, add the cpp files needed (file will be "lib<name>.a")
-add_library(fetchbot STATIC main.cpp sub2Points.cpp sub2Image.cpp)
+add_library(fetchbot STATIC main.cpp sub2Points.cpp sub2Image.cpp ImageConverter.h)
 
 # CMake will create executable add the cpp files needed
 add_executable(fetchbot_main main.cpp)
