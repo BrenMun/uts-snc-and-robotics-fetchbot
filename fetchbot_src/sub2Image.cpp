@@ -11,7 +11,9 @@ int main(int argc, char** argv)
   ifile.open("../data/my_image0.png");
   
   while(!ifile){
-    ros::spinOnce();std::cout << "file not found\n";
+    ros::spinOnce();
+    ifile.open("../data/my_image0.png");
+    std::cout << "file not found\n";
   }
   std::cout << "file found\n";
   ros::shutdown();
