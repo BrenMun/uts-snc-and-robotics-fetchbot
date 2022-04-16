@@ -16,7 +16,6 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   roscpp
   image_transport
-  OpenCV
   pcl_ros
 )
 
