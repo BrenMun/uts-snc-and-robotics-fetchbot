@@ -4,11 +4,13 @@
 
 int main(int argc, char** argv)
 {
+  ros::init(argc, argv, "image_converter");
+  
+  
   std::ifstream ifile;
   ifile.open("../data/my_image0.png");
-  ros::init(argc, argv, "image_converter");
-  ImageConverter ic;
   while(!ifile){
+    ImageConverter ic;
     ros::spinOnce();
   }
   ros::shutdown();
