@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 2.8.13)
 
 # Change project name
 project (fetchbot)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
 include_directories(/opt/ros/${ROS_DISTRO}/include)
 link_directories(/opt/ros/${ROS_DISTRO}/include)
