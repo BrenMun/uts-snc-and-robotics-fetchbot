@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 include_directories(/opt/ros/${ROS_DISTRO}/include)
 link_directories(/opt/ros/${ROS_DISTRO}/include)
 
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 4.2.0 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 #include opencv
