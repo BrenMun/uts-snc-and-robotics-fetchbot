@@ -1,12 +1,13 @@
+#include <ros/ros.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <sstream>                                                 // Added this
+
 static const std::string OPENCV_WINDOW = "Image window";
 
-//Image Converter class from cv_bridge tutorial:
-//https://wiki.ros.org/cv_bridge/Tutorials/UsingCvBridgeToConvertBetweenROSImagesAndOpenCVImages
 class ImageConverter
 {
   ros::NodeHandle nh_;
@@ -51,6 +52,13 @@ public:
     // Update GUI Window
     cv::imshow(OPENCV_WINDOW, cv_ptr->image);
     cv::waitKey(3);
+
+    static int image_count = 0;                                // added this
+    std::stringstream sstream;                               // added this
+    sstream << "my_image" << image_count << ".png" ;                  // added this
+    ROS_ASSERT( cv::imwrite( sstream.str(),  cv_ptr->image ) );      // added this
+    image_count++;                                      // added this
+
 
     // Output modified video stream
     image_pub_.publish(cv_ptr->toImageMsg());
