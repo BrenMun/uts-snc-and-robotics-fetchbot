@@ -21,5 +21,8 @@ int main(int argc, char** argv)
     ifile.open("../data/my_image0.png");
   }
   ros::shutdown();
+
+  cv::Mat image = cv::imread("../data/my_image0.png");
+  cv::imshow("image", image);
   return 0;
 } 
