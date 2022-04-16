@@ -40,7 +40,7 @@ public:
     }
     static int image_count = 0;
     std::stringstream sstream;
-    sstream << "../data/my_image" << image_count << ".png" ;
+    sstream << "../data/image" << image_count << ".png" ;
     cv::imwrite( sstream.str(),  cv_ptr->image );
     image_count++;
   }
