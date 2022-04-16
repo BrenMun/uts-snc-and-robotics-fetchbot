@@ -5,14 +5,15 @@
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "image_converter");
-  
+  ImageConverter ic;
   
   std::ifstream ifile;
   ifile.open("../data/my_image0.png");
+  
   while(!ifile){
-    ImageConverter ic;
-    ros::spinOnce();
+    ros::spinOnce();std::cout << "file not found\n";
   }
+  std::cout << "file found\n";
   ros::shutdown();
   return 0;
 } 
