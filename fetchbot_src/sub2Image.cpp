@@ -7,8 +7,8 @@
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "image_converter");
-    while(true){
-    ImageConverter ic;
+  ImageConverter ic;
+  while(true){
     ros::spinOnce();
   }
   return 0;
