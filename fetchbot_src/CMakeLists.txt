@@ -29,6 +29,7 @@ add_library(fetchbot STATIC
   ImageConverter.h 
   testArmControl.cpp
   testHeadControl.cpp
+  robotHead.h
 )
 
 # CMake will create executable add the cpp files needed
