@@ -10,19 +10,32 @@ attaching/detaching objects from the robot.
 #include <moveit_msgs/DisplayTrajectory.h>
 #include <moveit_msgs/AttachedCollisionObject.h>
 #include <moveit_msgs/CollisionObject.h>
+#include <iostream>
 
 
 
 int main(int argc, char **argv)
-{
+{   ////////////////
+    // INPUT POSE //
+    ////////////////
+	geometry_msgs::Pose target_pose1;
+    std::cout << "Input Position (x,y,z):\n";
+    std::cout << "    x = "; std::cin >> target_pose1.position.x;
+    std::cout << "    y = "; std::cin >> target_pose1.position.y;
+    std::cout << "    z = "; std::cin >> target_pose1.position.z;
+    target_pose1.orientation.w = 1.0;
+
+	//////////////
+	// INIT ROS //
+	//////////////
     ros::init(argc, argv, "move_group_interface_tutorial");
     ros::NodeHandle node_handle;  
     ros::AsyncSpinner spinner(1);
     spinner.start();
     
-    ///////////
-    // SETUP //
-    ///////////
+	//////////////////
+    // SETUP MOVEIT //
+    //////////////////
     moveit::planning_interface::MoveGroupInterface group("arm");
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     ros::Publisher display_publisher = node_handle.advertise<moveit_msgs::DisplayTrajectory>("/move_group/display_planned_path", 1, true);
@@ -37,13 +50,7 @@ int main(int argc, char **argv)
     /////////////////////////////
     // Planning to a Pose goal //
     /////////////////////////////
-    geometry_msgs::Pose target_pose1;
-    target_pose1.orientation.w = 1.0;
-    target_pose1.position.x = 0.4;
-    target_pose1.position.y = 0.52;
-    target_pose1.position.z = 1.15;
     group.setPoseTarget(target_pose1);
-
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     moveit::core::MoveItErrorCode success = group.plan(my_plan);
 
