@@ -17,7 +17,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   image_transport
   pcl_ros
-
+  moveit_core
+  moveit_ros_planning_interface
 )
 
 # CMake will create your library, add the cpp files needed (file will be "lib<name>.a")
@@ -39,9 +40,7 @@ add_executable(move_arm testArmControl.cpp)
 target_link_libraries(fetchbot_main fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(points_read fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(image_read fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS})
-
 target_link_libraries(move_arm fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
-install(TARGETS move_arm DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 
 #install(TARGETS <library_name> DESTINATION lib PUBLIC_HEADER DESTINATION include)
