@@ -27,11 +27,11 @@ void createTrackbars(){
     cv::createTrackbar(hsv_string[i], trackbarWindowName, &hsvMinMax[i], hsvMinMax[i], on_trackbar);
 }
 
-cv::Mat getThreshold(cv::Mat hsv){
-  cv::Mat threshold;
+cv::Mat getIsolatedObject(cv::Mat hsv){
+  cv::Mat threshold; cv::Mat res;
   while(true){
     //filter HSV image between values and store filtered image to threshold matrix
-	inRange(
+    inRange(
       hsv,
       cv::Scalar(hsvMinMax[0],hsvMinMax[2],hsvMinMax[4]), //hsv min
       cv::Scalar(hsvMinMax[1],hsvMinMax[3],hsvMinMax[5]), //hsv max
@@ -39,7 +39,9 @@ cv::Mat getThreshold(cv::Mat hsv){
     );
     imshow("threshold image",threshold);
     if (cv::waitKey(30) >= 0) break;
-  }
+  }    
+  //create isolated HSV image
+  bitwise_and(hsv, hsv, res, threshold);
   cv::destroyAllWindows();
-  return threshold;
+  return res;
 }
