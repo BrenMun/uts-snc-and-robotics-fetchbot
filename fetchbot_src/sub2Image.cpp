@@ -9,18 +9,18 @@ int main(int argc, char** argv)
   //subscribe to head camera topic and save an image in data folder
   ImageConverter ic;
   
-  //trys to open image and returns true if the file exists
-  std::ifstream ifile;
-  ifile.open("../data/my_image0.png");
+  // // trys to open image and returns true if the file exists
+  // std::ifstream ifile;
+  // ifile.open("../data/my_image0.png");
   
-  //while the image isn't saved
-  while(!ifile){
-    //spin once
-    ros::spinOnce();
-    //try to open image
-    ifile.open("../data/my_image0.png");
-  }
-  ros::shutdown();
+  // //while the image isn't saved
+  // while(!ifile){
+  //   //spin once
+  //   ros::spinOnce();
+  //   //try to open image
+  //   ifile.open("../data/my_image0.png");
+  // }
+  // ros::shutdown();
 
   cv::Mat image = cv::imread("../data/my_image0.png");
   cv::imshow("image", image);

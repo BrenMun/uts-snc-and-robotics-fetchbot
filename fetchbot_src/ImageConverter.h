@@ -5,6 +5,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <sstream>
+#include <fstream>
 
 class ImageConverter
 {
@@ -37,10 +38,19 @@ public:
       ROS_ERROR("cv_bridge exception: %s", e.what());
       return;
     }
-    static int image_count = 0;
-    std::stringstream sstream;
-    sstream << "../data/my_image" << image_count << ".png" ;
-    cv::imwrite( sstream.str(),  cv_ptr->image );
-    image_count++;
+
+    //file bool
+    std::ifstream ifile;
+    ifile.open("../data/my_image0.png");
+
+    //While file doesn't exist, save png
+    while(!ifile){
+      static int image_count = 0;
+      std::stringstream sstream;
+      sstream << "../data/my_image" << image_count << ".png" ;
+      cv::imwrite( sstream.str(),  cv_ptr->image );
+      image_count++;
+      ifile.open("../data/my_image0.png");
+    }
   }
 };
