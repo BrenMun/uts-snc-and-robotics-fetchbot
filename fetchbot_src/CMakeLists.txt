@@ -28,6 +28,7 @@ add_library(fetchbot STATIC
   sub2Image.cpp 
   ImageConverter.h 
   testArmControl.cpp
+  testHeadControl.cpp
 )
 
 # CMake will create executable add the cpp files needed
@@ -35,13 +36,14 @@ add_executable(fetchbot_main main.cpp)
 add_executable(points_read sub2Points.cpp)
 add_executable(image_read sub2Image.cpp)
 add_executable(move_arm testArmControl.cpp)
+add_executable(move_head testHeadControl.cpp)
 
 # Cmake will link against the libraries in final step
 target_link_libraries(fetchbot_main fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(points_read fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(image_read fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(move_arm fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
-
+target_link_libraries(move_head fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
 #install(TARGETS <library_name> DESTINATION lib PUBLIC_HEADER DESTINATION include)
 install(TARGETS fetchbot DESTINATION lib PUBLIC_HEADER DESTINATION include)
