@@ -1,59 +1,86 @@
-#include <moveit/move_group_interface/move_group_interface.h>
-#include <moveit/planning_scene_interface/planning_scene_interface.h>
-#include <moveit_msgs/DisplayRobotState.h>
-#include <moveit_msgs/DisplayTrajectory.h>
-#include <moveit_msgs/AttachedCollisionObject.h>
-#include <moveit_msgs/CollisionObject.h>
-#include <iostream>
+#include <ros/ros.h>
 
+#include <actionlib/client/simple_action_client.h>
+#include <control_msgs/PointHeadAction.h>
 
+// Our Action interface type, provided as a typedef for convenience
+typedef actionlib::SimpleActionClient<control_msgs::PointHeadAction> PointHeadClient;
 
-int main(int argc, char **argv)
+class RobotHead
 {
-	//////////////
-	// INIT ROS //
-	//////////////
-    ros::init(argc, argv, "move_group_interface_tutorial");
-    ros::NodeHandle node_handle;  
-    ros::AsyncSpinner spinner(1);
-    spinner.start();
-    
-	//////////////////
-    // SETUP MOVEIT //
-    //////////////////
-    moveit::planning_interface::MoveGroupInterface group("arm");
-    moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
-    ros::Publisher display_publisher = node_handle.advertise<moveit_msgs::DisplayTrajectory>("/move_group/display_planned_path", 1, true);
-    moveit_msgs::DisplayTrajectory display_trajectory;
+private:
+  PointHeadClient* point_head_client_;
 
-    ///////////////////////////////
-    // Getting Basic Information //
-    ///////////////////////////////
-    ROS_INFO("Reference frame: %s", group.getPlanningFrame().c_str());
-    ROS_INFO("Reference frame: %s", group.getEndEffectorLink().c_str());
+public:
+  //! Action client initialization 
+  RobotHead()
+  {
+    //Initialize the client for the Action interface to the head controller
+    point_head_client_ = new PointHeadClient("/head_controller/point_head", true);
 
-    /////////////////////////////
-    // Planning to a Pose goal //
-    /////////////////////////////
-    std::vector<double> group_variable_values;
-    group.getCurrentState()->copyJointGroupPositions(
-        group.getCurrentState()->getRobotModel()->getJointModelGroup(group.getName()), 
-        group_variable_values);
+    //wait for head controller action server to come up 
+    while(!point_head_client_->waitForServer(ros::Duration(5.0))){
+      ROS_INFO("Waiting for the point_head_action server to come up");
+    }
+  }
 
-    group_variable_values[0] = -1.0;
-    group.setJointValueTarget(group_variable_values);
-    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-    moveit::core::MoveItErrorCode success = group.plan(my_plan);
+  ~RobotHead()
+  {
+    delete point_head_client_;
+  }
 
-    ROS_INFO("Visualizing plan 2 (joint space goal) %s",success?"":"FAILED");
-    /* Sleep to give Rviz time to visualize the plan. */
-    sleep(5.0);
+  //! Points the high-def camera frame at a point in a given frame  
+  void lookAt(std::string frame_id, double x, double y, double z)
+  {
+    //the goal message we will be sending
+    control_msgs::PointHeadGoal goal;
 
-    //////////
-    // Move //
-    //////////
-    group.move();
+    //the target point, expressed in the requested frame
+    geometry_msgs::PointStamped point;
+    point.header.frame_id = frame_id;
+    point.point.x = x; point.point.y = y; point.point.z = z;
+    goal.target = point;
 
-    ros::shutdown();
-    return 0;
+    //we are pointing the high-def camera frame 
+    //(pointing_axis defaults to X-axis)
+    goal.pointing_frame = "high_def_frame";
+    goal.pointing_axis.x = 1;
+    goal.pointing_axis.y = 0;
+    goal.pointing_axis.z = 0;
+
+    //take at least 0.5 seconds to get there
+    goal.min_duration = ros::Duration(0.5);
+
+    //and go no faster than 1 rad/s
+    goal.max_velocity = 1.0;
+
+    //send the goal
+    point_head_client_->sendGoal(goal);
+
+    //wait for it to get there (abort after 2 secs to prevent getting stuck)
+    point_head_client_->waitForResult(ros::Duration(2));
+  }
+
+  //! Shake the head from left to right n times  
+  void shakeHead(int n)
+  {
+    int count = 0;
+    while (ros::ok() && ++count <= n )
+    {
+      //Looks at a point forward (x=5m), slightly left (y=1m), and 1.2m up
+      lookAt("base_link", 5.0, 1.0, 1.2);
+
+      //Looks at a point forward (x=5m), slightly right (y=-1m), and 1.2m up
+      lookAt("base_link", 5.0, -1.0, 1.2);
+    }
+  }
+};
+
+int main(int argc, char** argv)
+{
+  //init the ROS node
+  ros::init(argc, argv, "robot_driver");
+
+  RobotHead head;
+  head.shakeHead(3);
 }
