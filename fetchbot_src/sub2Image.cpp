@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 
-void captureImage(std::string location){
+cv::Mat captureImage(std::string location){
   //subscribe to head camera topic and save an image in data folder
   ImageConverter ic;
   //trys to open image and returns true if the file exists
@@ -20,10 +20,14 @@ void captureImage(std::string location){
   ros::shutdown();
   cv::Mat image = cv::imread(location);
   cv::imshow("image", image);
+  return image;
 }
 
 int main(int argc, char** argv)
 {
+  ///////////////////
+  // LOOK AT TABLE //
+  ///////////////////
   //init the ROS node
   ros::init(argc, argv, "robot_driver");
   //initialise robot head class
@@ -31,9 +35,20 @@ int main(int argc, char** argv)
   // look at (x,y,z) position in a given frame
   head.lookAt("base_link", 1, 0, 0.4);
   ros::Duration(1);
+
+  ///////////////////
+  // CAPTURE IMAGE //
+  ///////////////////
   //initialise ros
   ros::init(argc, argv, "image_converter");
   //capture image
-  captureImage("../data/my_image0.png");
+  cv::Mat image = captureImage("../data/my_image0.png");
+
+  ////////////////////////
+  // CONVERT BGR TO HSV //
+  ////////////////////////
+  cv::Mat HSV;
+  cv::cvtColor(image, HSV, CV_BGR2HSV);
+  cv::imwrite("../data/hsv_image.png", HSV);
   return 0;
 } 
