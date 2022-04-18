@@ -30,6 +30,7 @@ add_library(fetchbot STATIC
   testArmControl.cpp
   testHeadControl.cpp
   robotHead.h
+  hsvTrackbar.h
 )
 
 # CMake will create executable add the cpp files needed
