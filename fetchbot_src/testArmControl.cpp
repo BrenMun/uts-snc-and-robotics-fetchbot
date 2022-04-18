@@ -39,9 +39,9 @@ int main(int argc, char **argv)
     /////////////////////////////
     geometry_msgs::Pose target_pose1;
     target_pose1.orientation.w = 1.0;
-    target_pose1.position.x = 0.28;
-    target_pose1.position.y = -0.7;
-    target_pose1.position.z = 1.0;
+    target_pose1.position.x = 0.4;
+    target_pose1.position.y = 0.52;
+    target_pose1.position.z = 1.15;
     group.setPoseTarget(target_pose1);
 
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
