@@ -47,8 +47,20 @@ int main(int argc, char** argv)
   ////////////////////////
   // CONVERT BGR TO HSV //
   ////////////////////////
-  cv::Mat HSV;
-  cv::cvtColor(image, HSV, CV_BGR2HSV);
-  cv::imwrite("../data/hsv_image.png", HSV);
+  cv::Mat hsv;
+  cv::cvtColor(image, hsv, CV_BGR2HSV);
+  cv::imwrite("../data/hsv_image.png", hsv);
+
+  ///////////////////////
+  // FILTER OUT OBJECT //
+  ///////////////////////
+  cv::Mat threshold;
+  cv::inRange(
+    hsv,
+    cv::Scalar(222, 86, 22), //hsv min
+    cv::Scalar(240, 100, 50), //hsv max
+    threshold
+  );
+  cv::imwrite("../data/bin_image.png", threshold);
   return 0;
 } 
