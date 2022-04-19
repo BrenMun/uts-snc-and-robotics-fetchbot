@@ -1,86 +1,119 @@
+////////////////////////////////////////////////////////////////////////////////////
+// ROS node for saving images from the following topics:                          //
+//   - "/head_camera/depth/image_raw": saved as 1 channel 16 bit unsigned int PNG //
+//   - "/head_camera/rgb/image_raw ": saved as 3 channel 8 bit unsinged int PNG   //
+////////////////////////////////////////////////////////////////////////////////////
 #include <ros/ros.h>
-#include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/Image.h>
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <sstream>
-#include <fstream>
-#include "robotHead.h"
+#include <message_filters/subscriber.h>
+#include <message_filters/synchronizer.h>
+#include <vector>
 
-class ImageConverter
+//////////////////////////////////////////////////////////////////////////////////
+// Synchronisation is used on the subscribers to yield images that are captured //
+// roughly the same time                                                        //
+//////////////////////////////////////////////////////////////////////////////////
+//#define EXACT
+#define APPROXIMATE
+#ifdef EXACT
+#include <message_filters/sync_policies/exact_time.h>
+#endif
+#ifdef APPROXIMATE
+#include <message_filters/sync_policies/approximate_time.h>
+#endif
+using namespace message_filters;
+
+///////////////////////
+// CALLBACK FUNCTION //
+///////////////////////
+unsigned int cnt = 1; // Counter for filenames.
+void callback(const sensor_msgs::ImageConstPtr& msg_rgb, const sensor_msgs::ImageConstPtr& msg_depth)
 {
-  ros::NodeHandle nh_;
-  image_transport::ImageTransport it_;
-  image_transport::Subscriber image_sub_;
+    //Image pointers for depth and RGB
+    cv_bridge::CvImagePtr img_ptr_rgb; cv_bridge::CvImagePtr img_ptr_depth;
 
-public:
-  ImageConverter()
-    : it_(nh_)
-  {
-    // Subscrive to input video feed and publish output video feed
-    image_sub_ = it_.subscribe("/head_camera/depth_registered/image_raw", 1,
-      &ImageConverter::imageCb, this);
-  }
-
-  ~ImageConverter()
-  {
-  }
-
-  void imageCb(const sensor_msgs::ImageConstPtr& msg)
-  {
-    cv_bridge::CvImagePtr cv_ptr;
-    try
-    {
-      cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::MONO8);
+    //Depth image
+    try{
+        img_ptr_depth = cv_bridge::toCvCopy(*msg_depth, sensor_msgs::image_encodings::TYPE_16UC1);
     }
-    catch (cv_bridge::Exception& e)
-    {
-      ROS_ERROR("cv_bridge exception: %s", e.what());
-      return;
+    catch (cv_bridge::Exception& e){
+        ROS_ERROR("cv_bridge exception:  %s", e.what());
+        return;
     }
-    static int image_count = 0;
-    std::stringstream sstream;
-    sstream << "../data/depth_image" << image_count << ".png" ;
-    cv::imwrite( sstream.str(),  cv_ptr->image );
-    image_count++;
-  }
-};
 
-void captureImage(std::string location){
-  //subscribe to head camera topic and save an image in data folder
-  ImageConverter ic;
-  //trys to open image and returns true if the file exists
-  std::ifstream ifile;
-  ifile.open(location);
-  //while the image isn't saved
-  while(!ifile){
-    //spin once
-    ros::spinOnce();
-    //try to open image
-    ifile.open(location);
-  }
-  ros::shutdown();
-  cv::Mat image = cv::imread(location);
+    //RGB image
+    try{
+        img_ptr_rgb = cv_bridge::toCvCopy(*msg_rgb, sensor_msgs::image_encodings::TYPE_8UC3);
+    }
+    catch (cv_bridge::Exception& e){
+        ROS_ERROR("cv_bridge exception:  %s", e.what());
+        return;
+    }
+
+    //RGB and Depth images stored
+    cv::Mat& mat_depth = img_ptr_depth->image; cv::Mat& mat_rgb = img_ptr_rgb->image;
+
+    //file names
+    char file_rgb[100]; char file_depth[100];
+    sprintf(file_rgb, "%04d_rgb.png", cnt);
+    sprintf(file_depth, "%04d_depth.png", cnt);
+
+    //Save with no compression for faster processing
+    std::vector<int> png_params;
+    png_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
+    png_params.push_back(9); 
+
+    //write images to data folder
+    cv::imwrite(file_rgb, mat_rgb, png_params); cv::imwrite(file_depth, mat_depth, png_params);
+
+    ROS_INFO_STREAM(cnt << "\n");
+    ROS_INFO_STREAM("Images saved\n");
+    cnt++;
 }
 
-int main(int argc, char** argv)
-{
-  ///////////////////
-  // LOOK AT TABLE //
-  ///////////////////
-  ros::init(argc, argv, "robot_driver");
-  RobotHead head;
-  head.lookAt("base_link", 1, 0, 0.4); //frame and (x,y,z)
-  ros::Duration(1);
+//////////
+// MAIN //
+//////////
+int main(int argc, char** argv){
+    // Initialize the ROS system and become a node.
+    ros::init(argc, argv, "guardar_imagenes");
+    ros::NodeHandle nh;
+    message_filters::Subscriber<sensor_msgs::Image> subscriber_depth(
+        nh, "/head_camera/depth/image_raw", 1);
+    message_filters::Subscriber<sensor_msgs::Image> subscriber_rgb(
+        nh, "/head_camera/rgb/image_raw", 1);
 
-  ///////////////////
-  // CAPTURE IMAGE //
-  ///////////////////
-  ros::init(argc, argv, "depth_image_converter");
-  captureImage("../data/depth_image0.png");
-  cv::Mat image = cv::imread("../data/depth_image0.png");
-  imshow("depth_image", image);
-  cv::waitKey(0);
-  return 0;
-} 
+    //Synchronisation policy for images
+    #ifdef EXACT
+        typedef sync_policies::ExactTime<sensor_msgs::Image, sensor_msgs::Image> MySyncPolicy;
+    #endif
+    #ifdef APPROXIMATE
+        typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> MySyncPolicy;
+    #endif
+
+    // Sync policy takes a queue size as its constructor argument
+    Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), subscriber_rgb, subscriber_depth );
+    sync.registerCallback(boost::bind(&callback, _1, _2));
+
+    //Spin ros node
+    while(ros::ok()){
+        char c;
+        ROS_INFO_STREAM("\nEnter 'a' to save a pair of images or 'b' to automatically save 300 images\n");
+        std::cin.get(c);
+        std::cin.ignore();
+        c = tolower(c);
+        ROS_INFO_STREAM("You entered " << c << "\n");
+        if( c == 'a' ) ros::spinOnce();
+        else if( c == 'b' ) {
+            unsigned int cnt_init = cnt;
+            while( cnt - cnt_init < 300 ) ros::spinOnce();
+        }
+        else break;
+    }
+    ROS_INFO_STREAM("Closing node\n");
+    return 0;
+}
