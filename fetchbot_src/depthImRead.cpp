@@ -13,6 +13,7 @@
 #include <message_filters/synchronizer.h>
 #include <vector>
 #include <sstream>
+#include <fstream>
 
 //////////////////////////////////////////////////////////////////////////////////
 // Synchronisation is used on the subscribers to yield images that are captured //
@@ -96,11 +97,13 @@ int main(int argc, char** argv){
     Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), subscriber_rgb, subscriber_depth );
     sync.registerCallback(boost::bind(&callback, _1, _2));
 
-    //Spin ros node
-    while(ros::ok()){
+    //while the image isn't saved, spin
+    std::ifstream ifile1, ifile2;
+    ifile1.open("../data/rgb1.png"); ifile2.open("../data/depth1.png");
+    while(!ifile1 || !ifile2){
         ros::spinOnce();
+        ifile1.open("../data/rgb1.png"); ifile2.open("../data/depth1.png");
     }
-    ROS_INFO_STREAM("Closing node\n");
     ros::shutdown();
     return 0;
 }
