@@ -101,5 +101,6 @@ int main(int argc, char** argv){
         ros::spinOnce();
     }
     ROS_INFO_STREAM("Closing node\n");
+    ros::shutdown();
     return 0;
 }
