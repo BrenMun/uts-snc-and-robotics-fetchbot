@@ -60,7 +60,7 @@ void callback(const sensor_msgs::ImageConstPtr& msg_rgb, const sensor_msgs::Imag
 
     //file names
     std::stringstream file_rgb; file_rgb << "../data/rgb" << cnt << ".png" ;
-    std::stringstream file_depth; file_depth << "../data/rgb" << cnt << ".png" ;
+    std::stringstream file_depth; file_depth << "../data/depth" << cnt << ".png" ;
 
     //Save with no compression for faster processing
     std::vector<int> png_params;
@@ -70,10 +70,6 @@ void callback(const sensor_msgs::ImageConstPtr& msg_rgb, const sensor_msgs::Imag
     //write images to data folder
     cv::imwrite(file_rgb.str(), mat_rgb, png_params); 
     cv::imwrite(file_depth.str(), mat_depth, png_params);
-
-    ROS_INFO_STREAM(cnt << "\n");
-    ROS_INFO_STREAM("Images saved\n");
-    cnt++;
 }
 
 //////////
@@ -81,7 +77,7 @@ void callback(const sensor_msgs::ImageConstPtr& msg_rgb, const sensor_msgs::Imag
 //////////
 int main(int argc, char** argv){
     // Initialize the ROS system and become a node.
-    ros::init(argc, argv, "guardar_imagenes");
+    ros::init(argc, argv, "save_images");
     ros::NodeHandle nh;
     message_filters::Subscriber<sensor_msgs::Image> subscriber_depth(
         nh, "/head_camera/depth/image_raw", 1);
