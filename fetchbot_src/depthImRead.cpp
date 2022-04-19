@@ -12,6 +12,7 @@
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <vector>
+#include <sstream>
 
 //////////////////////////////////////////////////////////////////////////////////
 // Synchronisation is used on the subscribers to yield images that are captured //
@@ -58,17 +59,17 @@ void callback(const sensor_msgs::ImageConstPtr& msg_rgb, const sensor_msgs::Imag
     cv::Mat& mat_depth = img_ptr_depth->image; cv::Mat& mat_rgb = img_ptr_rgb->image;
 
     //file names
-    char file_rgb[100]; char file_depth[100];
-    sprintf(file_rgb, "%04d_rgb.png", cnt);
-    sprintf(file_depth, "%04d_depth.png", cnt);
+    std::stringstream file_rgb; file_rgb << "../data/rgb" << cnt << ".png" ;
+    std::stringstream file_depth; file_depth << "../data/rgb" << cnt << ".png" ;
 
     //Save with no compression for faster processing
     std::vector<int> png_params;
     png_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
-    png_params.push_back(9); 
+    png_params.push_back(9);   
 
     //write images to data folder
-    cv::imwrite(file_rgb, mat_rgb, png_params); cv::imwrite(file_depth, mat_depth, png_params);
+    cv::imwrite(file_rgb.str(), mat_rgb, png_params); 
+    cv::imwrite(file_depth.str(), mat_depth, png_params);
 
     ROS_INFO_STREAM(cnt << "\n");
     ROS_INFO_STREAM("Images saved\n");
@@ -101,18 +102,7 @@ int main(int argc, char** argv){
 
     //Spin ros node
     while(ros::ok()){
-        char c;
-        ROS_INFO_STREAM("\nEnter 'a' to save a pair of images or 'b' to automatically save 300 images\n");
-        std::cin.get(c);
-        std::cin.ignore();
-        c = tolower(c);
-        ROS_INFO_STREAM("You entered " << c << "\n");
-        if( c == 'a' ) ros::spinOnce();
-        else if( c == 'b' ) {
-            unsigned int cnt_init = cnt;
-            while( cnt - cnt_init < 300 ) ros::spinOnce();
-        }
-        else break;
+        ros::spinOnce();
     }
     ROS_INFO_STREAM("Closing node\n");
     return 0;
