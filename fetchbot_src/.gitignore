@@ -1,2 +1,5 @@
 # ignore directories
 build
+
+#ignore files inside of directories
+data/*
