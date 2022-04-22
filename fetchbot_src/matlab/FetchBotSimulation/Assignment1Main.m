@@ -3,7 +3,7 @@ clf
 clc 
 clear all
 
-profile on; 
+% profile on; 
 
 % Variables
 brickNum = 9;
@@ -74,5 +74,5 @@ while taskCompleted == false
     end
 end
 
-profile viewer
+% profile viewer
         
