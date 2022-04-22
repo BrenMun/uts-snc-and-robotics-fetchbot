@@ -54,14 +54,14 @@ end
 % Generate the Simulation
 simulation = Simulation(ur3Base, ur5Base, brickNum, brickX, brickY, brickZ);
 
-%% Find The UR3 Robots Reach
-simulation.robotUR3.CalculateMaxReach(ur3Base);
-%% Find The UR5 Robots Reach
-simulation.robotUR5.CalculateMaxReach(ur5Base);
-%% Find The UR3 Robots Volume
-simulation.robotUR3.UR3ReachVolume()
-%% Find The UR5 Robots Volume
-simulation.robotUR5.UR5ReachVolume()
+% Find The UR3 Robots Reach
+% simulation.robotUR3.CalculateMaxReach(ur3Base);
+% Find The UR5 Robots Reach
+% simulation.robotUR5.CalculateMaxReach(ur5Base);
+% Find The UR3 Robots Volume
+% simulation.robotUR3.UR3ReachVolume()
+% Find The UR5 Robots Volume
+% simulation.robotUR5.UR5ReachVolume()
 %% Build Wall
 
 simulation.DetermineWallLocation()
