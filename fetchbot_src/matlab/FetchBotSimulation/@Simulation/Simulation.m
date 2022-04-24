@@ -9,6 +9,7 @@ classdef Simulation < handle % Passes by reference
         %Objects
         robotUR3;
         robotUR5;
+        robotFetch;
         environment;
         bricks = Brick.empty;
         brickNum;
@@ -51,17 +52,21 @@ classdef Simulation < handle % Passes by reference
 
     
     methods
-        function obj = Simulation(ur3Base, ur5Base, brickNum, brickX, brickY, brickZ)
+        function obj = Simulation(ur3Base, ur5Base,fetchBase, brickNum, brickX, brickY, brickZ)
             %SIMULATION Construct an instance of this class
             %   Detailed explanation goes here
             obj.brickX = brickX; obj.brickY = brickY; obj.brickZ = brickZ;
             obj.ur3Base = ur3Base; obj.ur5Base = ur5Base; obj.brickNum = brickNum;
             % Simulate Robots
             % Adding UR3 robot
-            obj.robotUR3 = UR3(ur3Base);
+            %obj.robotUR3 = UR3(ur3Base);
 
             % Adding UR5 robot
             obj.robotUR5 = LinearUR5e(ur5Base);
+
+            % Adding robotFetch
+            obj.robotFetch = FetchRobot(fetchBase);
+           
             
             % Add Table, Cones, Walls
             obj.environment = EnvironmentSetUp(obj.workspace, 2.25);

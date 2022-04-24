@@ -4,7 +4,7 @@ classdef LinearUR5e < handle
         model;
         
         %> Workspace
-        workspace = [-4 4 -4 4 -1.2 2.5];
+        workspace = [-2 2 -2 2 -1.2 2.5];
         scale = 0.2; 
         
         %> Flag to indicate if gripper is used

@@ -9,7 +9,7 @@ clear all
 brickNum = 9;
 tableTolerance = 0.75;
 taskCompleted = false; 
-workspace = [-4 4 -4 4 -1.2 2.5];
+workspace = [-2 2 -2 2 -1.2 2.5];
 brickX=[];
 brickY=[];
 brickZ=[];
@@ -18,6 +18,7 @@ brickRot=[];
 % Add starting Poses for Robots
 ur3Base =  transl(0,0.5,0) * trotz(0);  
 ur5Base = (transl(0,-0.5,0) * trotx(pi/2) * troty(pi/2) * trotz(0));
+fetchBase = transl(-0.8,0.5,0);
 
 % Add Bricks
 random = 0; % 1 for random or 0 for manual values.
@@ -52,7 +53,7 @@ switch random
 end
 
 % Generate the Simulation
-simulation = Simulation(ur3Base, ur5Base, brickNum, brickX, brickY, brickZ);
+simulation = Simulation(ur3Base, ur5Base,fetchBase, brickNum, brickX, brickY, brickZ);
 
 % Find The UR3 Robots Reach
 % simulation.robotUR3.CalculateMaxReach(ur3Base);
@@ -68,8 +69,8 @@ simulation.DetermineWallLocation()
 
 while taskCompleted == false
     simulation.BuildBrickWall(simulation.robotUR5);
-    simulation.BuildBrickWall(simulation.robotUR3);
-    if ((simulation.robotUR3.taskcompleted == true) && (simulation.robotUR5.taskcompleted == true))
+    simulation.BuildBrickWall(simulation.robotFetch);
+    if ((simulation.robotFetch.taskcompleted == true) && (simulation.robotUR5.taskcompleted == true))
         taskCompleted = true;
     end
 end

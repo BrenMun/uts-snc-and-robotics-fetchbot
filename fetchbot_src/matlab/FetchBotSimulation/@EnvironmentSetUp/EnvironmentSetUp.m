@@ -25,26 +25,26 @@ classdef EnvironmentSetUp < handle
             obj.table = Table(-0.857, 0, 0);
            
             % Adding cones
-            obj.cone = Cone(0,0,0,0,1,tableClearence);
+            %obj.cone = Cone(0,0,0,0,1,tableClearence);
             
-            % Adding concrete
-            w1 = workspace(2); 
-            w2 = workspace(5); 
-            w3 = workspace(6);
-            surf([-w1,-w1;w1,w1],[-w1,w1;-w1,w1],[w2,w2;w2,w2],'CData',imread('concrete.jpg'),'FaceColor','texturemap');
-            % Adding Wall
-            surf(-1*[w1,w1;w1,w1],-1*[-w1,w1;-w1,w1],[w2,w2;w3,w3],'CData',imread('wall.jpg'),'FaceColor','texturemap');
-            surf(-1*[-w1,w1;-w1,w1],-1*[w1,w1;w1,w1],[w2,w2;w3,w3],'CData',imread('wall.jpg'),'FaceColor','texturemap');
+            % % Adding concrete
+            %w1 = workspace(2); 
+            %w2 = workspace(5); 
+            %w3 = workspace(6);
+            %surf([-w1,-w1;w1,w1],[-w1,w1;-w1,w1],[w2,w2;w2,w2],'CData',imread('concrete.jpg'),'FaceColor','texturemap');
+            % % Adding Wall
+            %surf(-1*[w1,w1;w1,w1],-1*[-w1,w1;-w1,w1],[w2,w2;w3,w3],'CData',imread('wall.jpg'),'FaceColor','texturemap');
+            %surf(-1*[-w1,w1;-w1,w1],-1*[w1,w1;w1,w1],[w2,w2;w3,w3],'CData',imread('wall.jpg'),'FaceColor','texturemap');
             
             % workspace = [-4 4 -4 4 -1.2 2.5];
-            wX = workspace(2)-1;
-            wY = workspace(3)+0.25;
-            wZ = workspace(5)*-1;
-            % Adding Fire estinguisher
-            obj.fireExtinguisher = FireExtinguisher(wX,wY,0.5);
+            %wX = workspace(2)-1;
+            %wY = workspace(3)+0.25;
+            %wZ = workspace(5)*-1;
+            % %Adding Fire estinguisher
+            %obj.fireExtinguisher = FireExtinguisher(wX,wY,0.5);
 
-            % Adding EStop
-            obj.eStop = EmergencyStop(0.857, 1.65);
+            % %Adding EStop
+            %obj.eStop = EmergencyStop(0.857, 1.65);
 
         end
         

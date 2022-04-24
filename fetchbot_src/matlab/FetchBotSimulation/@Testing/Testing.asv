@@ -112,17 +112,7 @@ clear all
 
 % https://www.google.com/url?sa=i&url=http%3A%2F%2Fragazzini.me.vt.edu%2Fpdf%2FLearning_IK_ID_GAN_RAS_2020.pdf&psig=AOvVaw1Rba0hDu8iqFIiWcYX9SmQ&ust=1650853547949000&source=images&cd=vfe&ved=0CA0QjhxqFwoTCPC9kO7Sq_cCFQAAAAAdAAAAABAm
 
-L0 = 0.1;  % x
-D1 = 0.2;
-L1 = 0.1;
-L2 = 0.1;   % x
-L3 = 0.1;
-L4 = 0.1;
-L5 = 0.1;
-L6 = 0.1;
-L7 = 0.1;
-L8 = 0.1;
-L9 = 0.1;
+
 
     L(1) = Link([pi     L1+D1   L0         0      1]); % PRISMATIC Link
     L(2) = Link([0      L3      L2        -pi/2   0]);
