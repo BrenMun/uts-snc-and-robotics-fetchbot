@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 include_directories(/opt/ros/${ROS_DISTRO}/include)
 link_directories(/opt/ros/${ROS_DISTRO}/include)
 
-find_package(OpenCV 3.2 REQUIRED)
+find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 #include opencv
@@ -32,15 +32,17 @@ add_library(fetchbot STATIC
   robotHead.h
   hsvTrackbar.h
   depthImRead.cpp
+  perception.cpp
 )
 
 # CMake will create executable add the cpp files needed
-add_executable(fetchbot_main main.cpp)
-add_executable(points_read sub2Points.cpp)
-add_executable(image_read sub2Image.cpp)
-add_executable(move_arm testArmControl.cpp)
-add_executable(move_head testHeadControl.cpp)
-add_executable(depth_image depthImRead.cpp)
+add_executable(fetchbot_main main.cpp) #run main
+add_executable(points_read sub2Points.cpp) #subscribe to pointcloud and print them
+add_executable(image_read sub2Image.cpp) #read and filter image to find point
+add_executable(move_arm testArmControl.cpp) #arm control using moveit
+add_executable(move_head testHeadControl.cpp) #head control using moveit
+add_executable(depth_image depthImRead.cpp) #subscribe to rgb and depth image
+add_executable(perception perception.cpp) #live perception node
 
 # Cmake will link against the libraries in final step
 target_link_libraries(fetchbot_main fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS})
@@ -49,6 +51,7 @@ target_link_libraries(image_read fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(move_arm fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 target_link_libraries(move_head fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 target_link_libraries(depth_image fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
+target_link_libraries(perception fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
 #install(TARGETS <library_name> DESTINATION lib PUBLIC_HEADER DESTINATION include)
 install(TARGETS fetchbot DESTINATION lib PUBLIC_HEADER DESTINATION include)
