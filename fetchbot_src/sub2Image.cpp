@@ -27,16 +27,16 @@ int main(int argc, char** argv)
   ///////////////////
   // LOOK AT TABLE //
   ///////////////////
-  ros::init(argc, argv, "robot_driver");
-  RobotHead head;
-  head.lookAt("base_link", 1, 0, 0.4); //frame and (x,y,z)
-  ros::Duration(1);
+  // ros::init(argc, argv, "robot_driver");
+  // RobotHead head;
+  // head.lookAt("base_link", 1, 0, 0.4); //frame and (x,y,z)
+  // ros::Duration(1);
 
-  ///////////////////
-  // CAPTURE IMAGE //
-  ///////////////////
-  ros::init(argc, argv, "image_converter");
-  captureImage("../data/my_image0.png");
+  // ///////////////////
+  // // CAPTURE IMAGE //
+  // ///////////////////
+  // ros::init(argc, argv, "image_converter");
+  // captureImage("../data/my_image0.png");
   cv::Mat image = cv::imread("../data/my_image0.png");
 
   ////////////////////////
