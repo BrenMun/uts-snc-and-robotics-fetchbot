@@ -158,3 +158,30 @@ L9 = 0.1;
     hold on
     
     fetchBot.teach
+
+
+ %% https://au.mathworks.com/help/robotics/ug/check-for-manipulator-self-collisions-using-collision-meshes.html
+clear 
+clc
+clf 
+iiwa = importrobot('fetch.urdf');
+iiwa.DataFormat = 'column';
+
+startConfig = [0 -pi/4 pi 3*pi/2 0 -pi/2 pi/8]';
+goalConfig = [0 -pi/4 pi 3*pi/4 0 -pi/2 pi/8]';
+
+q = trapveltraj([startConfig goalConfig],100,'EndTime',3);
+
+
+% isConfigInCollision = false(100,1);
+% configCollisionPairs = cell(100,1);
+% sepDistForConfig = zeros(iiwa.NumBodies+1,iiwa.NumBodies+1,100);
+% for i = 1:length(q)
+%     [isColliding, sepDist] = checkCollision(iiwa,q(:,i),'Exhaustive','on');
+%     isConfigInCollision(i) = isColliding;
+%     sepDistForConfig(:,:,i) = sepDist;
+% end
+figure;
+show(iiwa)
+%show(iiwa,q(:,firstCollisionIdx));
+%exampleHelperHighlightCollisionBodies(iiwa,configCollisionPairs{firstCollisionIdx}+1,gca);
