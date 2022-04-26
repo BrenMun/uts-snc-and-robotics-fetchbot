@@ -45,12 +45,12 @@ int main(int argc, char **argv)
   head.lookAt("base_link", 1, 0, 0.4); //frame and (x,y,z)
   ros::Duration(1);
   
+  ////////////////
+  // PERCEPTION //
+  ////////////////
   ros::init(argc, argv, "image_listener");
   ros::NodeHandle nh;
-  cv::namedWindow("view");
-
   image_transport::ImageTransport it(nh);
-  image_transport::Subscriber sub = it.subscribe("camera/image", 1, imageCallback);
+  image_transport::Subscriber sub = it.subscribe("/head_camera/rgb/image_raw", 1, imageCallback);
   ros::spin();
-  cv::destroyWindow("view");
 }
