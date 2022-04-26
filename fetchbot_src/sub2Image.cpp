@@ -51,8 +51,34 @@ int main(int argc, char** argv)
   ////////////////////
   createTrackbars();
   //values for gazebo cube: object = min(91,15,63) and object edges = max(256,245,256)
-  cv::Mat threshold = getIsolatedObject(hsv); 
-  imshow("Isolated Object", threshold);
+  cv::Mat threshold = getIsolatedObject(hsv);
+  
+  //create isolated HSV image
+  cv::Mat isolated; bitwise_and(hsv, hsv, isolated, threshold);
+  
+  //find contours of the isolated image
+  std::vector<std::vector<cv::Point> > contours;
+  cv::Mat contourOutput = threshold.clone();
+  cv::findContours(contourOutput, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+
+  //Draw the contours
+  cv::Mat contourImage(image.size(), CV_8UC3, cv::Scalar(0,0,0));
+  cv::Scalar colors[3] = {cv::Scalar(0, 0, 255), cv::Scalar(0, 255, 0), cv::Scalar(0, 0, 255)};
+  for (size_t idx = 0; idx < contours.size(); idx++) 
+    cv::drawContours(image, contours, idx, colors[idx % 3]);
+
+  //find moments in the contour image
+  cv::Moments m = cv::moments(threshold, true);
+
+  //find centroid of the contour
+  cv::Point p(m.m10/m.m00, m.m01/m.m00);
+  
+  // coordinates of centroid
+  std::cout<< "Point: " << p.x << ", " << p.y << std::endl;
+
+  // show the image with a point mark at the centroid
+  circle(image, p, 5, cv::Scalar(0,0,255), -1);
+  cv::imshow("Input Image", image);
   cv::waitKey(0);
   return 0;
 } 
