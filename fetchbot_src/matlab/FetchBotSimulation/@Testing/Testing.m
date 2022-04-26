@@ -185,3 +185,5 @@ figure;
 show(iiwa)
 %show(iiwa,q(:,firstCollisionIdx));
 %exampleHelperHighlightCollisionBodies(iiwa,configCollisionPairs{firstCollisionIdx}+1,gca);
+
+%% 
