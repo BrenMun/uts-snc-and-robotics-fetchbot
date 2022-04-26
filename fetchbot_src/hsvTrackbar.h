@@ -28,7 +28,7 @@ void createTrackbars(){
 }
 
 cv::Mat getIsolatedObject(cv::Mat hsv){
-  cv::Mat threshold; cv::Mat res;
+  cv::Mat threshold;
   while(true){
     //filter HSV image between values and store filtered image to threshold matrix
     inRange(
@@ -40,8 +40,6 @@ cv::Mat getIsolatedObject(cv::Mat hsv){
     imshow("threshold image",threshold);
     if (cv::waitKey(30) >= 0) break;
   }    
-  //create isolated HSV image
-  bitwise_and(hsv, hsv, res, threshold);
   cv::destroyAllWindows();
-  return res;
+  return threshold;
 }
