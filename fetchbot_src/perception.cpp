@@ -40,7 +40,7 @@ void callback(const sensor_msgs::ImageConstPtr& msg_rgb, const sensor_msgs::Poin
 
     //find centroid of the object
     cv::Point c(m.m10/m.m00, m.m01/m.m00);
-    std::cout << "Image Point: " << c.x << ", " << c.y << "\n";
+    std::cout << "Image Point: (" << c.x << ", " << c.y << "), ";
 
     //convert msg to xyz point cloud
     pcl::fromROSMsg(*msg_depth, depth);
