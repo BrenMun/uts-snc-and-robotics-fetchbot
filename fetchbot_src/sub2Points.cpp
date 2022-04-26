@@ -8,7 +8,6 @@ void cloudCb(const sensor_msgs::PointCloud2ConstPtr & cloud) {
   pcl::PointCloud<pcl::PointXYZ> depth;
   pcl::fromROSMsg(*cloud, depth);
   pcl::PointXYZ p1 = depth.at(233, 275);
-  pcl::PointXYZ 
   std::cout << "Point: (" << p1.x << ", " << p1.y << ", " << p1.z << ")\n";
 }
 
