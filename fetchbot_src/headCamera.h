@@ -23,6 +23,6 @@ class HeadCamera
     message_filters::Subscriber<sensor_msgs::Image> sub_rgb_;
     message_filters::Subscriber<sensor_msgs::PointCloud2> sub_depth_;
     public:
-    HeadCamera(ros::NodeHandle *nh);
-    void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth);
+    HeadCamera(ros::NodeHandle nh);
+    // void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth);
 };

@@ -1,24 +1,6 @@
 #include "headCamera.h"
 
-HeadCamera::HeadCamera(ros::NodeHandle *nh){
-    //subscribers
-    message_filters::Subscriber<sensor_msgs::Image> subscriber_rgb(*nh, "/head_camera/rgb/image_raw", 1);
-    message_filters::Subscriber<sensor_msgs::PointCloud2> subscriber_depth(*nh, "/head_camera/depth_registered/points", 1);
-    
-    //Synchronisation policy for images
-    #ifdef EXACT
-        typedef sync_policies::ExactTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
-    #endif
-    #ifdef APPROXIMATE
-        typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
-    #endif
-
-    //Sync policy takes a queue size as its constructor argument
-    Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), subscriber_rgb, subscriber_depth );
-    sync.registerCallback(boost::bind(&callback, _1, _2));
-}
-
-void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth){
+void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth){
   cv_bridge::CvImagePtr cv_ptr;
   cv::Mat image, hsv, mask;
   
@@ -51,4 +33,22 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
     ROS_ERROR("cv_bridge exception:  %s", e.what());
     return;
   }
+}
+
+HeadCamera::HeadCamera(ros::NodeHandle nh){
+    //subscribers
+    message_filters::Subscriber<sensor_msgs::Image> subscriber_rgb(nh, "/head_camera/rgb/image_raw", 1);
+    message_filters::Subscriber<sensor_msgs::PointCloud2> subscriber_depth(nh, "/head_camera/depth_registered/points", 1);
+    
+    //Synchronisation policy for images
+    #ifdef EXACT
+        typedef sync_policies::ExactTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
+    #endif
+    #ifdef APPROXIMATE
+        typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
+    #endif
+
+    //Sync policy takes a queue size as  its constructor argument
+    Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), subscriber_rgb, subscriber_depth);
+    sync.registerCallback(boost::bind(&callback, _1, _2));
 }
