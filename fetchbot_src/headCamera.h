@@ -5,25 +5,20 @@
 #include <pcl_ros/point_cloud.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
-
-//#define EXACT
-#define APPROXIMATE
-#ifdef EXACT
-#include <message_filters/sync_policies/exact_time.h>
-#endif
-#ifdef APPROXIMATE
 #include <message_filters/sync_policies/approximate_time.h>
-#endif
-using namespace message_filters;
 using namespace sensor_msgs;
 
 class HeadCamera
 {
     private:
-    message_filters::Subscriber<sensor_msgs::Image> sub_rgb_;
-    message_filters::Subscriber<sensor_msgs::PointCloud2> sub_depth_;
+    ros::NodeHandle nh_;
+    message_filters::Subscriber<Image> sub_rgb_;
+    message_filters::Subscriber<PointCloud2> sub_depth_;
+
+    typedef message_filters::sync_policies::ApproximateTime<Image, PointCloud2> MySyncPolicy;
+    typedef message_filters::Synchronizer<MySyncPolicy> Sync;
+    boost::shared_ptr<Sync> sync_;
     public:
     HeadCamera();
-    void sub2Cam(ros::NodeHandle *nh);
-    // void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth);
+    void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth);
 };

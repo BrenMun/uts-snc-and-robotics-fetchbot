@@ -1,9 +1,7 @@
 #include "headCamera.h"
 #include <iostream>
-#include <message_filters/subscriber.h>
-#include <message_filters/synchronizer.h>
 
-void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth){
+void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth){
   cv_bridge::CvImagePtr cv_ptr;
   cv::Mat image, hsv, mask;
   
@@ -38,22 +36,9 @@ void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth
   }
 }
 
-HeadCamera::HeadCamera(){}
-
-void HeadCamera::sub2Cam(ros::NodeHandle *nh){
-  //subscribers
-  message_filters::Subscriber<sensor_msgs::Image> subscriber_rgb(*nh, "/head_camera/rgb/image_raw", 1);
-  message_filters::Subscriber<sensor_msgs::PointCloud2> subscriber_depth(*nh, "/head_camera/depth_registered/points", 1);
-
-  //Synchronisation policy for images
-  #ifdef EXACT
-      typedef sync_policies::ExactTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
-  #endif
-  #ifdef APPROXIMATE
-      typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
-  #endif
-
-  //Sync policy takes a queue size as  its constructor argument
-  Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), subscriber_rgb, subscriber_depth);
-  sync.registerCallback(boost::bind(&callback, _1, _2));
+HeadCamera::HeadCamera(){
+  sub_rgb_.subscribe(nh_, "/head_camera/rgb/image_raw", 1);
+  sub_depth_.subscribe(nh_, "/head_camera/depth_registered/points", 1);
+  sync_.reset(new Sync(MySyncPolicy(10), sub_rgb_, sub_depth_));
+  sync_->registerCallback(boost::bind(&HeadCamera::callback, this, _1, _2));
 }

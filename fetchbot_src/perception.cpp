@@ -68,9 +68,7 @@ int main(int argc, char **argv)
   // PERCEPTION //
   ////////////////
   ros::init(argc, argv, "sub2camera");
-  ros::NodeHandle nh;
   HeadCamera camera;
-  camera.sub2Cam(&nh);
 
   // message_filters::Subscriber<sensor_msgs::Image> subscriber_rgb(nh, "/head_camera/rgb/image_raw", 1);
   // message_filters::Subscriber<sensor_msgs::PointCloud2> subscriber_depth(nh, "/head_camera/depth_registered/points", 1);
