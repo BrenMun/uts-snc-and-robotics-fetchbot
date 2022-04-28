@@ -1,4 +1,7 @@
 #include "headCamera.h"
+#include <iostream>
+#include <message_filters/subscriber.h>
+#include <message_filters/synchronizer.h>
 
 void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth){
   cv_bridge::CvImagePtr cv_ptr;
@@ -35,11 +38,13 @@ void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth
   }
 }
 
-HeadCamera::HeadCamera(ros::NodeHandle nh){
+HeadCamera::HeadCamera(){}
+
+void HeadCamera::sub2Cam(ros::NodeHandle *nh){
     //subscribers
-    message_filters::Subscriber<sensor_msgs::Image> subscriber_rgb(nh, "/head_camera/rgb/image_raw", 1);
-    message_filters::Subscriber<sensor_msgs::PointCloud2> subscriber_depth(nh, "/head_camera/depth_registered/points", 1);
-    
+    message_filters::Subscriber<sensor_msgs::Image> subscriber_rgb(*nh, "/head_camera/rgb/image_raw", 1);
+    message_filters::Subscriber<sensor_msgs::PointCloud2> subscriber_depth(*nh, "/head_camera/depth_registered/points", 1);
+
     //Synchronisation policy for images
     #ifdef EXACT
         typedef sync_policies::ExactTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
