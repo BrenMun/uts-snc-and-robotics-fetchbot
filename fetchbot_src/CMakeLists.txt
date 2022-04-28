@@ -25,6 +25,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_library(fetchbot STATIC 
   main.cpp 
   robotHead.h
+  headCamera.cpp
   hsvTrackbar.h
   perception.cpp
 )
