@@ -1,21 +1,22 @@
 #include <ros/ros.h>
-#include <image_transport/image_transport.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <cv_bridge/cv_bridge.h>
-#include <pcl_ros/point_cloud.h>
-#include <message_filters/subscriber.h>
-#include <message_filters/synchronizer.h>
+// #include <image_transport/image_transport.h>
+// #include <opencv2/highgui/highgui.hpp>
+// #include <cv_bridge/cv_bridge.h>
+// #include <pcl_ros/point_cloud.h>
+// #include <message_filters/subscriber.h>
+// #include <message_filters/synchronizer.h>
 #include "robotHead.h"
+#include "headCamera.h"
 
-//#define EXACT
-#define APPROXIMATE
-#ifdef EXACT
-#include <message_filters/sync_policies/exact_time.h>
-#endif
-#ifdef APPROXIMATE
-#include <message_filters/sync_policies/approximate_time.h>
-#endif
-using namespace message_filters;
+// //#define EXACT
+// #define APPROXIMATE
+// #ifdef EXACT
+// #include <message_filters/sync_policies/exact_time.h>
+// #endif
+// #ifdef APPROXIMATE
+// #include <message_filters/sync_policies/approximate_time.h>
+// #endif
+// using namespace message_filters;
 
 void callback(const sensor_msgs::ImageConstPtr& msg_rgb, const sensor_msgs::PointCloud2ConstPtr& msg_depth)
 {
@@ -68,19 +69,20 @@ int main(int argc, char **argv)
   ////////////////
   ros::init(argc, argv, "sub2camera");
   ros::NodeHandle nh;
-  message_filters::Subscriber<sensor_msgs::Image> subscriber_rgb(nh, "/head_camera/rgb/image_raw", 1);
-  message_filters::Subscriber<sensor_msgs::PointCloud2> subscriber_depth(nh, "/head_camera/depth_registered/points", 1);
+  HeadCamera camera(&nh);
+  // message_filters::Subscriber<sensor_msgs::Image> subscriber_rgb(nh, "/head_camera/rgb/image_raw", 1);
+  // message_filters::Subscriber<sensor_msgs::PointCloud2> subscriber_depth(nh, "/head_camera/depth_registered/points", 1);
 
-  //Synchronisation policy for images
-  #ifdef EXACT
-      typedef sync_policies::ExactTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
-  #endif
-  #ifdef APPROXIMATE
-      typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
-  #endif
+  // //Synchronisation policy for images
+  // #ifdef EXACT
+  //     typedef sync_policies::ExactTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
+  // #endif
+  // #ifdef APPROXIMATE
+  //     typedef sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
+  // #endif
 
-  // Sync policy takes a queue size as its constructor argument
-  Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), subscriber_rgb, subscriber_depth );
-  sync.registerCallback(boost::bind(&callback, _1, _2));
+  // // Sync policy takes a queue size as its constructor argument
+  // Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), subscriber_rgb, subscriber_depth );
+  // sync.registerCallback(boost::bind(&callback, _1, _2));
   ros::spin();
 }
