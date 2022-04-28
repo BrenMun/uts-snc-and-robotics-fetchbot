@@ -14,7 +14,6 @@ class HeadCamera
     ros::NodeHandle nh_;
     message_filters::Subscriber<Image> sub_rgb_;
     message_filters::Subscriber<PointCloud2> sub_depth_;
-
     typedef message_filters::sync_policies::ApproximateTime<Image, PointCloud2> MySyncPolicy;
     typedef message_filters::Synchronizer<MySyncPolicy> Sync;
     boost::shared_ptr<Sync> sync_;
