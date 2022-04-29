@@ -21,11 +21,12 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
     pcl::fromROSMsg(*msg_depth, depth);
     pcl::PointXYZ p = depth.at(c.x, c.y);
     //convert pcl::PointXYZ to geometry_msgs::Point
-    geometry_msgs::Point point; point.x = p.x; point.y = p.y; point.z = p.z;
+    geometry_msgs::PointStamped target; 
+    target.point.x = p.x; target.point.y = p.y; target.point.z = p.z;
     //publish geometry_msgs::Point of centroid
-    pubPoint_.publish(point);    
+    pubPoint_.publish(target);    
     //stream point values
-    ROS_INFO_STREAM("Image Point: " << c << ", " <<"3D Point: " << point);
+    ROS_INFO_STREAM("Image Point: " << c << ", " <<"3D Point: " << target.point);
   }
   catch (cv_bridge::Exception& e){
     ROS_ERROR("cv_bridge exception:  %s", e.what());
@@ -38,5 +39,5 @@ HeadCamera::HeadCamera(){
   sub_depth_.subscribe(nh_, "/head_camera/depth_registered/points", 1);
   sync_.reset(new Sync(MySyncPolicy(10), sub_rgb_, sub_depth_));
   sync_->registerCallback(boost::bind(&HeadCamera::callback, this, _1, _2));
-  pubPoint_ = nh_.advertise<geometry_msgs::Point> ("target_point", 1);
+  pubPoint_ = nh_.advertise<geometry_msgs::PointStamped> ("target_point", 1);
 }
