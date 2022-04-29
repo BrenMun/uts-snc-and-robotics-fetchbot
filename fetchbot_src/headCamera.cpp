@@ -19,6 +19,7 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
     cv::Point c(m.m10/m.m00, m.m01/m.m00);
     //convert msg to xyz point cloud
     pcl::fromROSMsg(*msg_depth, depth);
+    depth.points.resize (depth.width * depth.height);
     pcl::PointXYZ p = depth.at(c.x, c.y);
     //convert pcl::PointXYZ to geometry_msgs::Point
     geometry_msgs::PointStamped target; 
