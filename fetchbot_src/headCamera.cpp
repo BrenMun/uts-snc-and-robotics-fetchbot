@@ -24,7 +24,7 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
     //convert pcl::PointXYZ to geometry_msgs::Point
     geometry_msgs::PointStamped target; 
     target.point.x = p.x; target.point.y = p.y; target.point.z = p.z; 
-    target.header.frame_id = "head_camera_link";
+    target.header.frame_id = "head_camera_rgb_optical_frame";
     //publish geometry_msgs::Point of centroid
     pubPoint_.publish(target);    
     //stream point values
