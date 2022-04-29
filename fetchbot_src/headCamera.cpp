@@ -22,7 +22,8 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
     pcl::PointXYZ p = depth.at(c.x, c.y);
     //convert pcl::PointXYZ to geometry_msgs::Point
     geometry_msgs::PointStamped target; 
-    target.point.x = p.x; target.point.y = p.y; target.point.z = p.z;
+    target.point.x = p.x; target.point.y = p.y; target.point.z = p.z; 
+    target.header.frame_id = "head_camera_link";
     //publish geometry_msgs::Point of centroid
     pubPoint_.publish(target);    
     //stream point values
