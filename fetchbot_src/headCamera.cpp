@@ -17,16 +17,17 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
     cv::Moments m = cv::moments(mask, true);
     //find centroid of the object
     cv::Point c(m.m10/m.m00, m.m01/m.m00);
-    //convert msg to xyz point cloud
+    //get head camera point cloud
     pcl::fromROSMsg(*msg_depth, depth);
     depth.points.resize (depth.width * depth.height);
+    //get corresponding 3D point from 2D image position of centroid
     pcl::PointXYZ p = depth.at(c.x, c.y);
-    //convert pcl::PointXYZ to geometry_msgs::Point
-    geometry_msgs::PointStamped target; 
-    target.point.x = p.x; target.point.y = p.y; target.point.z = p.z; 
+    //convert pcl::PointXYZ to geometry_msgs::Point for publishing
+    geometry_msgs::PointStamped target; target.point.x = p.x; target.point.y = p.y; target.point.z = p.z; 
+    //set the frame of reference for the point
     target.header.frame_id = "head_camera_rgb_optical_frame";
     //publish geometry_msgs::Point of centroid
-    pubPoint_.publish(target);    
+    pubPoint_.publish(target);
     //stream point values
     ROS_INFO_STREAM("Image Point: " << c << ", " <<"3D Point: " << target.point);
   }
