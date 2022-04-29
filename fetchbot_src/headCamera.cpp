@@ -17,11 +17,13 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
     cv::Moments m = cv::moments(mask, true);
     //find centroid of the object
     cv::Point c(m.m10/m.m00, m.m01/m.m00);
-    std::cout << "Image Point: (" << c.x << ", " << c.y << "), ";
+    ROS_INFO_STREAM("Image Point: " << c);
     //convert msg to xyz point cloud
     pcl::fromROSMsg(*msg_depth, depth);
     pcl::PointXYZ p1 = depth.at(c.x, c.y);
-    std::cout << "3D Point: (" << p1.x << ", " << p1.y << ", " << p1.z << ")\n";
+    //publish xyz point of centroid
+    // pubPoint_.publish(p1);
+    ROS_INFO_STREAM("3D Point: " << p1);
   }
   catch (cv_bridge::Exception& e){
     ROS_ERROR("cv_bridge exception:  %s", e.what());
