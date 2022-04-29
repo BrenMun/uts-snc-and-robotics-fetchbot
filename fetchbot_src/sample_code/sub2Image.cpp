@@ -1,9 +1,9 @@
 #include <ros/ros.h>
 #include "ImageConverter.h"
-#include "robotHead.h"
+#include "../robotHead.h"
 #include <fstream>
 #include <string>
-#include "hsvTrackbar.h"
+#include "../hsvTrackbar.h"
 
 void captureImage(std::string location){
   //subscribe to head camera topic and save an image in data folder
