@@ -6,6 +6,7 @@
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
+#include <geometry_msgs/Point.h>
 using namespace sensor_msgs;
 
 class HeadCamera
