@@ -38,5 +38,5 @@ HeadCamera::HeadCamera(){
   sub_depth_.subscribe(nh_, "/head_camera/depth_registered/points", 1);
   sync_.reset(new Sync(MySyncPolicy(10), sub_rgb_, sub_depth_));
   sync_->registerCallback(boost::bind(&HeadCamera::callback, this, _1, _2));
-  pubPoint_ = nh_.advertise<geometry_msgs::Point> ("target point", 1);
+  pubPoint_ = nh_.advertise<geometry_msgs::Point> ("target_point", 1);
 }
