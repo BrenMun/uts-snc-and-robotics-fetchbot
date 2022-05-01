@@ -26,6 +26,8 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
     geometry_msgs::PointStamped target; target.point.x = p.x; target.point.y = p.y; target.point.z = p.z; 
     //set the frame of reference for the point
     target.header.frame_id = "head_camera_rgb_optical_frame";
+    //set stamp to current time
+    target.header.stamp = ros::Time::now();
     //publish geometry_msgs::Point of centroid
     pubPoint_.publish(target);
     //stream point values
