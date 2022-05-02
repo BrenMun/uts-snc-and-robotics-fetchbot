@@ -12,7 +12,7 @@ while(currentTime < 10)
     % Run perception and control algorithms, which use received data and 
     % control parameters to produce some output.
     % Package and send control outputs as ROS messages
-    robot.perceptionFcn(robot.MySub.LatestMessage); 
+    robot.perceptionFcn(robot.subPoint.LatestMessage, robot.subCloud.LatestMessage); 
 %     robot.controlFcn 
     pause(0.1)
 end

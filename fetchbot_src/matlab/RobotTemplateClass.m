@@ -1,7 +1,7 @@
 classdef RobotTemplateClass < handle
     properties
         % ROS publishers and subscribers
-        MySub = []; MyPub = []; PubMsg = [];
+        subPoint = []; subCloud = []; MyPub = []; PubMsg = [];
         % Perception algorithm   
         PerceptionParam = 1;
         % Control algorithm
@@ -15,20 +15,25 @@ classdef RobotTemplateClass < handle
         function obj = RobotTemplateClass(ipAddr)
             % Connect to ROS master at the IP address specified
             rosshutdown; rosinit(ipAddr);
-            % Create subscriber (subscribes to target_point of type geometry_msgs::PointStamped)
-            obj.MySub = rossubscriber('/target_point','geometry_msgs/PointStamped');
+            % Subscribes to target_point
+            obj.subPoint = rossubscriber('/target_point','geometry_msgs/PointStamped');
+            % Subscribe to camera point cloud
+            obj.subCloud = rossubscriber('/head_camera/depth_registered/points', 'sensor_msgs/PointCloud2');
             % Create publisher (no publisher yet)
              %[obj.MyPub,obj.PubMsg] = rospublisher('/my_pub_topic','geometry_msgs/Point'); 
         end     
         
         %% PERCEPTION ALGORITHM
         % Receives sensor data, runs perception algorithm
-        function perceptionFcn(obj,receivedMsg)           
-            if isempty(receivedMsg)
+        function perceptionFcn(obj,receivedPointStamped,receivedCloud)           
+            if isempty(receivedPointStamped)
                 disp 'message is empty'
             else
-                receivedData = receivedMsg.Point;
-                obj.ControlInputs = myPerceptionAlgorithm(receivedData,obj.PerceptionParam);  
+                obj.ControlInputs = myPerceptionAlgorithm(...
+                    receivedPointStamped.Point,...
+                    receivedCloud,...
+                    obj.PerceptionParam...
+                );
             end
         end
         
