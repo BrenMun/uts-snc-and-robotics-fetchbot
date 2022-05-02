@@ -12,15 +12,10 @@ while(currentTime < 10)
     % Run perception and control algorithms, which use received data and 
     % control parameters to produce some output.
     % Package and send control outputs as ROS messages
-    robot.perceptionFcn(robot.MySub.LatestMessage);
-    robot.controlFcn;
-
-    %% 4: VISUALIZE
-    % (Optional) Visualize data as the algorithm is running
-    currentTime = toc;
-    plot(robot.MyAxes,currentTime,robot.ControlOutputs,'bo','MarkerSize',5)
-    drawnow
-
-    % (Optional) Pause execution to add delay between iterations
+    robot.perceptionFcn(robot.MySub.LatestMessage); 
+%     robot.controlFcn 
     pause(0.1)
 end
+
+% shut down node after loop
+rosshutdown
