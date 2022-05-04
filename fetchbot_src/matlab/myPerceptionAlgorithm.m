@@ -1,7 +1,6 @@
-function perceptionOutput = myPerceptionAlgorithm(recvData,param)
+function perceptionOutput = myPerceptionAlgorithm(recvPoint,recvCloud,param)
 % Placeholder perception algorithm
-% Copyright 2017 The MathWorks, Inc.
-
-    perceptionOutput = recvData / param; 
-
+    perceptionOutput = recvPoint; %/ param;
+    disp(recvPoint)
+    disp(recvCloud)
 end
