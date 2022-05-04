@@ -160,7 +160,9 @@ L9 = 0.12193;  % gripper joint
     fetchBot.teach
     %Add table like you added the cube in lab 5
     % add is collision and avoid collison in
-    %change from 3 dof to 8? dof
+    % change from 3 dof to 8? dof
+    % Set up way points for bin movement
+    % 
 
  %% https://au.mathworks.com/help/robotics/ug/check-for-manipulator-self-collisions-using-collision-meshes.html
 clear 
