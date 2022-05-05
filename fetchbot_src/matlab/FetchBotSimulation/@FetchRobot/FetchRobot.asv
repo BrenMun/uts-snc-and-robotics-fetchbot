@@ -28,8 +28,7 @@ classdef FetchRobot < handle
         currentState = 0; 
         targetedBrickID = 0;
         steps = 0; 
-        qHome = [0, 0, 0, 0, 0, 0, 0, 0];
-        % qHome =zeros(1,8);
+        qHome = [0, -pi/2, -pi/2, pi/2, 0, 0, 0, 0];
        
 
     end

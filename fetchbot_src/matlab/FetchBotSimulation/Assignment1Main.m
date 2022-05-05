@@ -18,7 +18,7 @@ brickRot=[];
 % Add starting Poses for Robots
 ur3Base =  transl(0,0.5,0) * trotz(0);  
 ur5Base = (transl(0,-0.5,0) * trotx(pi/2) * troty(pi/2) * trotz(0));
-fetchBase = transl(-0.8,0.5,0);
+fetchBase = transl(-0.8,0.5,0.15) *trotz(pi);
 
 % Add Bricks
 random = 0; % 1 for random or 0 for manual values.
