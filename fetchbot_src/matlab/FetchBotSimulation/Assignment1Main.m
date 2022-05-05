@@ -63,6 +63,11 @@ simulation = Simulation(ur3Base, ur5Base,fetchBase, brickNum, brickX, brickY, br
 % simulation.robotUR3.UR3ReachVolume()
 % Find The UR5 Robots Volume
 % simulation.robotUR5.UR5ReachVolume()
+
+%% Teach
+
+
+
 %% Build Wall
 
 simulation.DetermineWallLocation()
