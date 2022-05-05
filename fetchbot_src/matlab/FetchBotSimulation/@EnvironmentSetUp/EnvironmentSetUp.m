@@ -3,15 +3,19 @@ classdef EnvironmentSetUp < handle
     %   Detailed explanation goes here
     
     properties
-        model; 
-        tableTolerance = 0.5;
-        w1;
-        w2;
-        w3;
-        table;
-        cone;
-        fireExtinguisher;
-        eStop;
+    model; 
+    tableTolerance = 0.5;
+    w1;
+    w2;
+    w3;
+    table;
+    cone;
+    fireExtinguisher;
+    eStop;
+    
+    tableVertices;
+    tableFaces;
+    tableFaceNormals;
 
 
     end
@@ -23,12 +27,16 @@ classdef EnvironmentSetUp < handle
             
             % Adding the Table
             % obj.table = Table(-0.857, 0, 0);
-            centerpnt = [2,0,-0.5];
+            centerpnt = [0,0.3,-0.7];
             side = 1.5;
             plotOptions.plotFaces = true;
             [vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
             axis equal
             camlight
+            obj.tableFaces = faces;
+            obj.tableVertices = vertex; 
+            obj.tableFaceNormals = faceNormals; 
+           
            
             % Adding cones
             %obj.cone = Cone(0,0,0,0,1,tableClearence);
@@ -53,6 +61,8 @@ classdef EnvironmentSetUp < handle
             %obj.eStop = EmergencyStop(0.857, 1.65);
 
         end
+
+        
         
     end
 end
