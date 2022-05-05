@@ -6,7 +6,7 @@ clear all
 % profile on; 
 
 % Variables
-brickNum = 9;
+brickNum = 4;
 tableTolerance = 0.75;
 taskCompleted = false; 
 workspace = [-2 2 -2 2 -1.2 2.5];
@@ -25,10 +25,14 @@ random = 0; % 1 for random or 0 for manual values.
 
 switch random
     case 0
-        brickX=[0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6];
-        brickY=[-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8];
-        brickZ=[0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04];
-        brickRot= zeros(1,9);  %fill with zeros, fix class
+%         brickX=[0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6];
+%         brickY=[-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8];
+%         brickZ=[0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04];
+        brickX=[0.4, 0.3, 0.2, 0.1];
+        brickY=[0.2, 0.4, 0.6, 0.8];
+        brickZ=[0.04, 0.04, 0.04, 0.04];
+        brickRot= zeros(1,5);  %fill with zeros, fix class
+        
     case 1
         for i = 1:1:brickNum
 %             a = -1.75/2 + tableTolerance;
@@ -53,7 +57,12 @@ switch random
 end
 
 % Generate the Simulation
-simulation = Simulation(ur3Base, ur5Base,fetchBase, brickNum, brickX, brickY, brickZ);
+simulation = Simulation(ur3Base,ur5Base,fetchBase,brickNum,brickX,brickY,brickZ);
+
+%%
+simulation.robotFetch.CalculateMaxReach(fetchBase)
+%%
+simulation.robotFetch.FetchRobotReachVolume() 
 
 % Find The UR3 Robots Reach
 % simulation.robotUR3.CalculateMaxReach(ur3Base);
@@ -65,17 +74,18 @@ simulation = Simulation(ur3Base, ur5Base,fetchBase, brickNum, brickX, brickY, br
 % simulation.robotUR5.UR5ReachVolume()
 
 %% Teach
-
-
+% robotFetch = FetchRobot(fetchBase);
+% robotFetch.teaching();
+simulation.teaching; 
 
 %% Build Wall
 
 simulation.DetermineWallLocation()
 
 while taskCompleted == false
-    simulation.BuildBrickWall(simulation.robotUR5);
+    % simulation.BuildBrickWall(simulation.robotUR5);
     simulation.BuildBrickWall(simulation.robotFetch);
-    if ((simulation.robotFetch.taskcompleted == true) && (simulation.robotUR5.taskcompleted == true))
+    if ((simulation.robotFetch.taskcompleted == true)) % && (simulation.robotUR5.taskcompleted == true))
         taskCompleted = true;
     end
 end

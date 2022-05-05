@@ -30,6 +30,9 @@ classdef FetchRobot < handle
         steps = 0; 
         qHome = [0, 0, 0, 0, 0, 0, 0, 0];
         % qHome =zeros(1,8);
+
+        
+       
        
 
     end
@@ -124,6 +127,11 @@ function GetFetchRobotRobot(self)
     self.model = SerialLink([L(1) L(2) L(3) L(4) L(5) L(6) L(7) L(8)],'name',name);
 end
 
+%% teaching
+function teaching(self)
+    self.model.teach();
+end
+
 %% 
 function PlotLinksFetchRobot(self)
     self.model.plot(self.qHome,'workspace',self.workspace,'scale',self.scale, 'noarrow'); 
@@ -165,6 +173,9 @@ function PlotAndColourRobot(self)%robot,workspace)
         end
     end
 end 
+
+
+
 %% Calculate the arms max reach and volume
 
 % Reach
@@ -233,9 +244,13 @@ function FetchRobotReachVolume(self)
     counter = 1;
     for q1 = self.qlim(1,1):(pi/10):self.qlim(1,2)
         for q2 = self.qlim(2,1):(pi/10):self.qlim(2,2)
-            endEff = self.model.fkine([q1, q2, 0, -pi/2, 0, 0]);
-            self.endEffectorPoses(counter,:) = endEff(1:3,4)';
-            counter = counter + 1;
+            for q3 = self.qlim(3,1):(pi/10):self.qlim(3,2)
+                for q4 = self.qlim(4,1):(pi/10):self.qlim(4,2)
+                    endEff = self.model.fkine([q1, q2, q3, q4, 0, 0, 0, 0]);
+                    self.endEffectorPoses(counter,:) = endEff(1:3,4)';
+                    counter = counter + 1;
+                end
+            end
         end
     end
     % Plot poses of end effectors

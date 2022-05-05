@@ -22,7 +22,13 @@ classdef EnvironmentSetUp < handle
             %   Detailed explanation goes here
             
             % Adding the Table
-            obj.table = Table(-0.857, 0, 0);
+            % obj.table = Table(-0.857, 0, 0);
+            centerpnt = [2,0,-0.5];
+            side = 1.5;
+            plotOptions.plotFaces = true;
+            [vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
+            axis equal
+            camlight
            
             % Adding cones
             %obj.cone = Cone(0,0,0,0,1,tableClearence);
