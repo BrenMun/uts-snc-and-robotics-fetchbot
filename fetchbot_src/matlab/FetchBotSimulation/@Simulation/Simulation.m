@@ -168,7 +168,9 @@ classdef Simulation < handle % Passes by reference
                     else
                         if robot.steps <= obj.trajSteps
                             %for i = 1:1:obj.trajSteps
+                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                                 result(robot.steps) = IsCollision(robot,robot.armTraj(robot.steps,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
+                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                                 robot.model.animate(robot.armTraj(robot.steps,:));
                                 robot.steps = robot.steps + 1;
                            % end

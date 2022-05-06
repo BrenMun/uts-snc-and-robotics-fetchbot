@@ -6,7 +6,7 @@ clear all
 % profile on; 
 
 % Variables
-brickNum = 4;
+brickNum = 1;
 tableTolerance = 0.75;
 taskCompleted = false; 
 workspace = [-2 2 -2 2 -1.2 2.5];
@@ -28,8 +28,8 @@ switch random
 %         brickX=[0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6];
 %         brickY=[-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8];
 %         brickZ=[0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04];
-        brickX=[0.4, 0.3, 0.2, 0.1];
-        brickY=[0.2, 0.4, 0.6, 0.8];
+        brickX=[0.1, 0.3, 0.2, 0.1];
+        brickY=[0.5, 0.4, 0.6, 0.8];
         brickZ=[0.04, 0.04, 0.04, 0.04];
         brickRot= zeros(1,5);  %fill with zeros, fix class
         
