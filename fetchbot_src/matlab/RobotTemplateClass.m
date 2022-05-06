@@ -7,9 +7,11 @@ classdef RobotTemplateClass < handle
         % Control algorithm
         ControlInputs = 0; ControlOutputs = 0; ControlParams = struct('gain',1);
         % Current time
-        CurrentTime = 0;
+        CurrentTime = 0;        
         % Tranformation Tree
-        tfTree;
+        tfTree;        
+        % Object carteason
+        targetPoint = [];
     end
     
     methods       
@@ -40,6 +42,7 @@ classdef RobotTemplateClass < handle
                     receivedCloud,...
                     obj.PerceptionParam...
                 );
+                obj.targetPoint = receivedPointStamped.Point;
             end
         end
         
