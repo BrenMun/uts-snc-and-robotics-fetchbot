@@ -8,6 +8,9 @@ workspace = [-1 1 -1 1 0 1.5]; % workspace for matlab simulation
 centerpnt = [0,0.3,0];  % Centre point for table proxy in matlab
 binPoint = [-0.2,0.5,0]; % bin centre point 
 
+% estop functionality
+eStop = false; 
+
 % Add starting Poses for Fetch Robot
 fetchBase = transl(0,-0.8,0.5) *trotz(-pi/2);
 
@@ -31,7 +34,7 @@ simulation.addObject(1,object)
 %simulation.teaching; 
 %% Recycle Object
 
-while taskCompleted == false
+while (taskCompleted == false && eStop == false)
     simulation.Recycle(simulation.robotFetch);
 
     if (simulation.robotFetch.taskcompleted == true)

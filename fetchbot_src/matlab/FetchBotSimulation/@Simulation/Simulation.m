@@ -192,11 +192,13 @@ classdef Simulation < handle % Passes by reference
                 case obj.MoveToBin
                     if (robot.currentState==obj.MoveToBin && robot.previousState==obj.MoveToObject)
 
-                        %% Move to way points to be above bin
+                        % Move to way points to be above bin
                            disp("Moving Object to Recycling Bin");
-                        %% let go
+                        % let go
                            disp("Dropping Object");
-                        %% scan for another object?
+                        % scan for another object?
+
+                        % So i need to build waypoints like LAB5
                         
                         
                     end
@@ -207,109 +209,6 @@ classdef Simulation < handle % Passes by reference
 
         end
 
-
-        function BuildBrickWall(obj, robot)
-            % State Machine toobj.trajSteps operate robots
-
-            switch robot.currentState
-
-                case obj.LocateNextBrick
-                    for i = 1:1:obj.brickNum
-                        if  obj.bricks(i).state == obj.unmoved % check bricks state
-                            % Find the closest brick, sort through for loop
-                            smallestDist = 4.0; % setting high for first run
-                            closestBrick = 0; 
-                            for j = 1:1:obj.brickNum
-                                if  obj.bricks(j).state == obj.unmoved
-                                    qEndEff = robot.model.getpos;
-                                    qBrick = obj.bricks(j).brickPose;
-                                    L = robot.model.fkine(qEndEff);
-                                    R = qBrick;
-                                   
-                                    %Find Distance
-                                    distance = sqrt(sum((L(1:3,4)-R(1:3,4)).^2));
-                                    if distance <= smallestDist
-                                        smallestDist = distance;
-                                        closestBrick = j; 
-                                    end
-                                end
-                            end
-                            
-                            obj.bricks(closestBrick).state = obj.targeted; % set brick state to trageted
-                            robot.targetedBrickID = closestBrick; % Set brick id as brick num
-                            robot.steps = 1; % resets steps
-                            robot.currentState = obj.PickUpBrick; % update robots state
-                            robot.previousState = obj.LocateNextBrick; % update robots previous state
-                            robot.taskcompleted = false; % update robots task completetion state
-                            break;
-                        else
-                            % End robot operation
-                            robot.taskcompleted = true;
-                        end
-                    end
-            
-                case obj.PickUpBrick
-                    if ((robot.currentState == obj.PickUpBrick) && (robot.previousState ==obj.LocateNextBrick))
-                        qCurrent = robot.model.getpos; 
-                        poseBrick = obj.bricks(robot.targetedBrickID).brickPose;
-                                                
-                        qBrick= robot.model.ikcon(poseBrick, qCurrent);
-                        robot.armTraj = jtraj(qCurrent, qBrick, obj.trajSteps);
-                        robot.previousState = obj.PickUpBrick;
-                        robot.steps = 1;
-                    else
-                        if robot.steps <= obj.trajSteps
-                            %for i = 1:1:obj.trajSteps
-                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                                %result(robot.steps) = IsCollision(robot,robot.armTraj(robot.steps,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
-                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                                robot.model.animate(robot.armTraj(robot.steps,:));
-                                robot.steps = robot.steps + 1;
-                           % end
-                        else 
-                            obj.bricks(robot.targetedBrickID).state = obj.moving;
-                            robot.currentState = obj.PlaceBrick;
-                            % obj.brickWallIndex = obj.brickWallIndex + 1;
-                            robot.steps = 1;
-                        end
-                        
-                    end
-
-                    case obj.PlaceBrick
-                    if ((robot.previousState == obj.PickUpBrick) && (obj.brickWallIndex < 10))
-                        qCurrent = robot.model.getpos;
-                        qWallPose = transl(obj.brickWallPoses(obj.brickWallIndex,:));   %transl(obj.wallX(obj.brickWallIndex),obj.wallY(obj.brickWallIndex),obj.wallZ(obj.brickWallIndex));
-%                         qWallPoses = obj.brickWallPoses(obj.brickWallIndex,:);
-%                         qWallPose = [qWallPoses(1)-robot.model.base(1,4), qWallPoses(2)-robot.model.base(2,4), qWallPoses(3)-robot.model.base(3,4)]
-%                         qWallPose = transl(qWallPose)
-                        %qWallPose = transl(obj.brickWallPoses(obj.bricks(robot.targetedBrickID).brickWallIndex));
-
-                         if obj.bricks(robot.targetedBrickID).state == obj.moving
-                             obj.brickWallIndex = obj.brickWallIndex + 1;
-                         end
-                        
-                        qWall = robot.model.ikcon(qWallPose, qCurrent);
-                        robot.model.fkine(qWall);
-                        robot.armTraj = jtraj(qCurrent, qWall, obj.trajSteps);
-                        robot.previousState = obj.PlaceBrick;
-                        robot.steps = 1;
-                    else
-                       if robot.steps <= obj.trajSteps 
-                           robot.model.animate(robot.armTraj(robot.steps,:));
-                           robot.steps = robot.steps + 1;
-                           % Update the brick position as robot moves
-                           % through trajectories
-                           updatedBrickPose = robot.model.fkine(robot.model.getpos);
-                           obj.bricks(robot.targetedBrickID).updateBrickPose(updatedBrickPose); % as robot trajectory changes, update bricks is called
-                       else
-                           obj.bricks(robot.targetedBrickID).state = obj.moved;
-                           robot.currentState = obj.LocateNextBrick;
-                           robot.steps = 1;
-                       end
-                    end
- 
-            end
-        end
 
 
 %%        
