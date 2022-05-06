@@ -1,0 +1,57 @@
+%% Ian Chivers 13283837 Assignment 1
+clf; clc; clear all;
+% profile on; 
+
+% Variables
+taskCompleted = false; 
+workspace = [-1 1 -1 1 0 1.5];
+centerpnt = [0,0.3,0];
+binPoint = [-0.2,0.5,0];
+
+% Add starting Poses for Robots
+fetchBase = transl(0,-0.8,0.5) *trotz(-pi/2);
+
+% Generate the Simulation
+simulation = Simulation(fetchBase, workspace, centerpnt, binPoint);
+
+headCamera = RobotTemplateClass(getenv("ROS_IP"));
+%% Grab object location from camera in ROS
+headCamera.perceptionFcn(headCamera.subPoint.LatestMessage, headCamera.subCloud.LatestMessage);
+headCamera.targetPoint
+object = headCamera.targetPoint;
+
+%% add object
+simulation.addObject(1,object)
+
+%% Max Reach (To Do)
+simulation.robotFetch.CalculateMaxReach(fetchBase)
+%% (Add more layers)
+simulation.robotFetch.FetchRobotReachVolume() 
+
+%% Teach for gui control
+simulation.teaching; 
+
+%%
+
+
+
+
+
+
+
+
+
+%% Build Wall
+
+simulation.DetermineWallLocation()
+
+while taskCompleted == false
+    % simulation.BuildBrickWall(simulation.robotUR5);
+    simulation.BuildBrickWall(simulation.robotFetch);
+    if ((simulation.robotFetch.taskcompleted == true)) % && (simulation.robotUR5.taskcompleted == true))
+        taskCompleted = true;
+    end
+end
+
+% profile viewer
+        

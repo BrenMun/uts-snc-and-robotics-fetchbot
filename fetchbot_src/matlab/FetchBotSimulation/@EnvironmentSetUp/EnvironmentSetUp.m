@@ -21,14 +21,14 @@ classdef EnvironmentSetUp < handle
     end
     
     methods
-        function obj = EnvironmentSetUp(workspace, tableClearence)
+        function obj = EnvironmentSetUp(workspace, tableClearence, centerpnt)
             %ENVSETUP Construct an instance of this class
             %   Detailed explanation goes here
             
             % Adding the Table
             % obj.table = Table(-0.857, 0, 0);
-            centerpnt = [0,0.3,-0.7];
-            side = 1.5;
+            % centerpnt = [0,0.3,-0.7];
+            side = 1;
             plotOptions.plotFaces = true;
             [vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
             axis equal

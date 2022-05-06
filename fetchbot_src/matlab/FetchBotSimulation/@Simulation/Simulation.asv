@@ -32,8 +32,6 @@ classdef Simulation < handle % Passes by reference
         wallY = [];
         wallZ = [];
 
-        objectCarteason;
-
     end
 
     properties(Constant)
@@ -153,24 +151,22 @@ classdef Simulation < handle % Passes by reference
     
                         robot.currentState = obj.MoveToObject; 
                         robot.previousState = obj.LocateObject; 
-
-                        obj.objectCarteason = [obj.objectLocation.X obj.objectLocation.Y obj.objectLocation.Z];
-                        disp("Object Located at: ");
-                        display(obj.objectCarteason);
+                        %disp("Here")
                     end
 
                 case obj.MoveToObject
                     if (robot.currentState==obj.MoveToObject && robot.previousState==obj.LocateObject)
                         
                         qCurrent = robot.model.getpos; 
-                        % objectCarteason = [obj.objectLocation.X obj.objectLocation.Y obj.objectLocation.Z];
-                        poseObject = transl(obj.objectCarteason);
+                        objectCarteason = [obj.objectLocation.X obj.objectLocation.Y obj.objectLocation.Z];
+                        poseObject = transl(objectCarteason);
                                                 
                         qBrick= robot.model.ikcon(poseObject, qCurrent);
                         robot.armTraj = jtraj(qCurrent, qBrick, obj.trajSteps);
 
+                    
 
-                        robot.previousState = obj.MoveToObject;  % why here?
+                        robot.previousState = obj.PickUpBrick;
                         robot.steps = 1;
                     
                         if robot.steps <= obj.trajSteps
@@ -181,10 +177,10 @@ classdef Simulation < handle % Passes by reference
                                 robot.model.animate(robot.armTraj(robot.steps,:));
                                 robot.steps = robot.steps + 1;
                             end
-                            robot.currentState = obj.MoveToBin;
                         else 
+                            obj.bricks(robot.targetedBrickID).state = obj.moving;
                             robot.currentState = obj.MoveToBin;
-                            robot.previousState = obj.MoveToObject; %duplicate?
+                            % obj.brickWallIndex = obj.brickWallIndex + 1;
                             robot.steps = 1;
                         end
                     end
@@ -192,16 +188,11 @@ classdef Simulation < handle % Passes by reference
                 case obj.MoveToBin
                     if (robot.currentState==obj.MoveToBin && robot.previousState==obj.MoveToObject)
 
-                        %% Move to way points to be above bin
-                           disp("Moving Object to Recycling Bin");
-                        %% let go
-                           disp("Dropping Object");
-                        %% scan for another object?
-                        
-                        
                     end
-                    robot.taskcompleted = true;
 
+
+                       robot.taskcompleted = true;
+            
 
             end
 

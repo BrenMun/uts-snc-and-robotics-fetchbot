@@ -37,8 +37,11 @@ classdef RobotTemplateClass < handle
                     receivedPointStamped.Point,...
                     receivedCloud,...
                     obj.PerceptionParam...
+
+                    obj.target = receivedPointStamped.Point.X;
+                    
+
                 );
-                obj.targetPoint = receivedPointStamped.Point;
             end
         end
         
