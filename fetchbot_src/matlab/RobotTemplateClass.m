@@ -8,6 +8,8 @@ classdef RobotTemplateClass < handle
         ControlInputs = 0; ControlOutputs = 0; ControlParams = struct('gain',1);
         % Current time
         CurrentTime = 0;
+        % Tranformation Tree
+        tfTree;
     end
     
     methods       
@@ -21,6 +23,8 @@ classdef RobotTemplateClass < handle
             obj.subCloud = rossubscriber('/head_camera/depth_registered/points', 'sensor_msgs/PointCloud2');
             % Create publisher (no publisher yet)
              %[obj.MyPub,obj.PubMsg] = rospublisher('/my_pub_topic','geometry_msgs/Point'); 
+            % Transform Tree Object
+            obj.tfTree = rostf;
         end     
         
         %% PERCEPTION ALGORITHM
@@ -29,8 +33,10 @@ classdef RobotTemplateClass < handle
             if isempty(receivedPointStamped)
                 disp 'message is empty'
             else
+                % pointStamped transformed relative to base_link
+                tfpt = transform(obj.tfTree,'base_link',receivedPointStamped);
                 obj.ControlInputs = myPerceptionAlgorithm(...
-                    receivedPointStamped.Point,...
+                    tfpt.Point,...
                     receivedCloud,...
                     obj.PerceptionParam...
                 );
