@@ -4,7 +4,8 @@ classdef FetchRobot < handle
         model;
         
         %>Workspace 
-        workspace = [-2 2 -2 2 -1.2 2.5];
+        
+        workspace;
         scale = 0.2; 
         
         %> Flag to indicate if gripper is used
@@ -20,19 +21,18 @@ classdef FetchRobot < handle
         q;
         base;
 
-        % State machine
+        
         
         armTraj;
         taskcompleted = false;
+
+        % State machine
         previousState = 0; 
         currentState = 0; 
         targetedBrickID = 0;
         steps = 0; 
         qHome = [0, 0, 0, 0, 0, 0, 0, 0];
         % qHome =zeros(1,8);
-
-        
-       
        
 
     end
@@ -54,10 +54,11 @@ self.PlotAndColourRobot();%robot,workspace);
 
 end
 %% Get and plot Robot
-function self = FetchRobot(baseFetchRobot)
+function self = FetchRobot(baseFetchRobot, workspace)
     
     % Set up FetchRobot robot workspace        
     %> robot = 
+    self.workspace = workspace; 
     self.GetFetchRobotRobot();
 
     %> Define the base location
