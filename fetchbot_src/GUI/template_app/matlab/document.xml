@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:pPr><w:pStyle w:val="code"/></w:pPr><w:r><w:t><![CDATA[classdef template_app < matlab.apps.AppBase
+
+    % Properties that correspond to app components
+    properties (Access = public)
+        figure1  matlab.ui.Figure
+        plot     matlab.ui.control.UIAxes
+    end
+
+    
+    properties (Access = private)
+        % place your class properties here
+        robot;
+    end
+    
+
+    % Callbacks that handle component events
+    methods (Access = private)
+
+        % Code that executes after component creation
+        function init(app, varargin)
+            % Code to run once GUI is loaded successfully
+            
+            app.robot = UR10();
+            app.robot.model.animate([0, -pi / 2, pi / 2, -pi / 2, -pi / 2, 0]);
+            drawnow();
+            
+        end
+    end
+
+    % Component initialization
+    methods (Access = private)
+
+        % Create UIFigure and components
+        function createComponents(app)
+
+            % Create figure1 and hide until all components are created
+            app.figure1 = uifigure('Visible', 'off');
+            app.figure1.Position = [1268 956 1324 786];
+            app.figure1.Name = 'gui_test';
+            app.figure1.HandleVisibility = 'callback';
+            app.figure1.Tag = 'figure1';
+
+            % Create plot
+            app.plot = uiaxes(app.figure1);
+            app.plot.FontSize = 10;
+            app.plot.NextPlot = 'replace';
+            app.plot.Tag = 'axes1';
+            app.plot.Position = [367 233 445 360];
+
+            % Show the figure after all components are created
+            app.figure1.Visible = 'on';
+        end
+    end
+
+    % App creation and deletion
+    methods (Access = public)
+
+        % Construct app
+        function app = template_app(varargin)
+
+            runningApp = getRunningApp(app);
+
+            % Check for running singleton app
+            if isempty(runningApp)
+
+                % Create UIFigure and components
+                createComponents(app)
+
+                % Register the app with App Designer
+                registerApp(app, app.figure1)
+
+                % Execute the startup function
+                runStartupFcn(app, @(app)init(app, varargin{:}))
+            else
+
+                % Focus the running singleton app
+                figure(runningApp.figure1)
+
+                app = runningApp;
+            end
+
+            if nargout == 0
+                clear app
+            end
+        end
+
+        % Code that executes before app deletion
+        function delete(app)
+
+            % Delete UIFigure when app is deleted
+            delete(app.figure1)
+        end
+    end
+end]]></w:t></w:r></w:p></w:body></w:document>
