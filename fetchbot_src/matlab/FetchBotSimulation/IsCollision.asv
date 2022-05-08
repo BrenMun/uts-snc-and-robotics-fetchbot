@@ -74,7 +74,7 @@ function [ transforms ] = GetLinkPoses( q, robot)
 %robot -  seriallink robot model
 %transforms - list of transforms
 
-links = robot.model;
+links = robot.model.links;
 transforms = zeros(4, 4, length(links) + 1);
 transforms(:,:,1) = robot.base;
 

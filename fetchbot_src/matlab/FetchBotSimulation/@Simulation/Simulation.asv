@@ -140,9 +140,10 @@ classdef Simulation < handle % Passes by reference
                
         end
 
-        function getPos(obj)
-            q = obj.robotFetch.model.getpos;
-            disp(q); 
+        function getPos(obj,robot)
+            q = robot.model.getpos;
+            dis()
+
         end
 
 
