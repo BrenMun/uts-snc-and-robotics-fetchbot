@@ -1,11 +1,20 @@
 #include "headCamera.h"
 #include <iostream>
 
+HeadCamera::HeadCamera(){
+  sub_rgb_.subscribe(nh_, "/head_camera/rgb/image_raw", 1);
+  sub_depth_.subscribe(nh_, "/head_camera/depth_registered/points", 1);
+  sync_.reset(new Sync(MySyncPolicy(10), sub_rgb_, sub_depth_));
+  sync_->registerCallback(boost::bind(&HeadCamera::callback, this, _1, _2));
+  pubPoint_ = nh_.advertise<geometry_msgs::PointStamped> ("target_point", 1);
+}
+
 void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth){
   cv_bridge::CvImagePtr cv_ptr;
   cv::Mat image, hsv, mask;
   pcl::PointCloud<pcl::PointXYZ> depth;    
   try{
+    //convert msg to a CV image
     cv_ptr = cv_bridge::toCvCopy(*msg_rgb, sensor_msgs::image_encodings::TYPE_8UC3);
     //store image in matrix
     image = cv_ptr->image;
@@ -37,10 +46,4 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
   }
 }
 
-HeadCamera::HeadCamera(){
-  sub_rgb_.subscribe(nh_, "/head_camera/rgb/image_raw", 1);
-  sub_depth_.subscribe(nh_, "/head_camera/depth_registered/points", 1);
-  sync_.reset(new Sync(MySyncPolicy(10), sub_rgb_, sub_depth_));
-  sync_->registerCallback(boost::bind(&HeadCamera::callback, this, _1, _2));
-  pubPoint_ = nh_.advertise<geometry_msgs::PointStamped> ("target_point", 1);
-}
+
