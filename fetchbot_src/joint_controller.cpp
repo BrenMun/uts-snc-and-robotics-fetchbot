@@ -1,7 +1,7 @@
 #include "joint_controller.h"
 
 JointController::JointController(ros::NodeHandle& nh):  nh_(nh),
-                                                        trajectory_action_("arm_controller/follow_joint_trajectory", true)
+                                                        trajectory_action_("arm_with_torso_controller/follow_joint_trajectory", true)
 {
     while(!trajectory_action_.waitForServer(ros::Duration(5.0))){
       ROS_INFO("Waiting for the joint_trajectory_action server");
@@ -9,7 +9,7 @@ JointController::JointController(ros::NodeHandle& nh):  nh_(nh),
 
     traj_sub_ = nh_.subscribe("cartesian_controller/trajectory", 1, &JointController::trajReceived, this);
 
-
+    goal_.trajectory.joint_names.push_back("torso_lift");
     goal_.trajectory.joint_names.push_back("shoulder_pan_joint");
     goal_.trajectory.joint_names.push_back("shoulder_lift_joint");
     goal_.trajectory.joint_names.push_back("upperarm_roll_joint");
@@ -37,13 +37,14 @@ JointController::JointController(ros::NodeHandle& nh):  nh_(nh),
 }
 
 JointController::JointController(ros::NodeHandle& nh, bool debug):  nh_(nh),
-                                                                    trajectory_action_("arm_controller/follow_joint_trajectory", true)
+                                                                    trajectory_action_("arm_with_torso_controller/follow_joint_trajectory", true)
 {
 
     while(!trajectory_action_.waitForServer(ros::Duration(5.0))){
       ROS_INFO("Waiting for the joint_trajectory_action server");
     }
 
+    goal_.trajectory.joint_names.push_back("torso_lift");
     goal_.trajectory.joint_names.push_back("shoulder_pan_joint");
     goal_.trajectory.joint_names.push_back("shoulder_lift_joint");
     goal_.trajectory.joint_names.push_back("upperarm_roll_joint");
