@@ -44,7 +44,7 @@ target_link_libraries(fetchbot_main fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(move_arm fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 target_link_libraries(perception fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 target_link_libraries(image_read ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
-target_link_libraries(move_arm fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
+target_link_libraries(joint_controller fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
 #install(TARGETS <library_name> DESTINATION lib PUBLIC_HEADER DESTINATION include)
 install(TARGETS fetchbot DESTINATION lib PUBLIC_HEADER DESTINATION include)
