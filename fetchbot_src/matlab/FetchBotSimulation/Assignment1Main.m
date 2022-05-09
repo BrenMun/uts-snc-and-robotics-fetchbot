@@ -14,7 +14,7 @@ eStop = false;
 % Add starting Poses for Fetch Robot
 fetchBase = transl(0,0,0.7) *trotz(pi);
 
-% Creates object conenct to ROS node for head camera information
+% Creates object conenct to ROS node for head camera inform                              ation
 headCamera = RobotTemplateClass(getenv("ROS_IP"));
 
 % Generate the Simulation
@@ -32,8 +32,15 @@ simulation.addObject(1,object)
 %simulation.robotFetch.FetchRobotReachVolume() 
 %% Teach for gui control
 simulation.teaching; 
-%%
+%% Get arms current position
 simulation.getPos()
+%% Test movement
+simulation.TestMovement(simulation.robotFetch);
+%% add way point
+waypoint = [0    0.8219   -0.8139   -3.3648   -1.1505   -1.7399   -2.0217 2.6003];
+simulation.AddWayPoint(simulation.robotFetch, waypoint);
+%% simulation reset
+simulation.resetRobot(simulation.robotFetch);
 %% Recycle Object
 
 while (taskCompleted == false && eStop == false)
@@ -41,7 +48,7 @@ while (taskCompleted == false && eStop == false)
 
     if (simulation.robotFetch.taskcompleted == true)
         taskCompleted = true;
-        disp("Object Recycled")
+        disp("Object Recycled");
     end
 end
 

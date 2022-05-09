@@ -148,8 +148,92 @@ classdef Simulation < handle % Passes by reference
             disp(q); 
         end
 
+        function TestMovement(obj, robot)
+
+            disp("test movement");
+            qCurrent = robot.model.getpos; 
+
+            %poseObject = transl(obj.objectCarteason);               
+            %qObject= robot.model.ikcon(poseObject, qCurrent);
+            qObject = [0    0.8219   -0.0780   -0.8516   -1.2403    1.0248   -1.4547    2.6003];
+
+            robot.armTraj = jtraj(qCurrent, qObject, obj.trajSteps);
+
+
+            robot.previousState = obj.MoveToObject;  % why here?
+            robot.steps = 1;
+        
+            if robot.steps <= obj.trajSteps
+                for i = 1:1:obj.trajSteps
+               
+                    %qCurrent = robot.model.getpos;
+                    %obj.JointController.SendTraj(qCurrent,robot.armTraj(i,:));
+                    
+                    robot.model.animate(robot.armTraj(robot.steps,:));
+                    robot.steps = robot.steps + 1;
+                end 
+                robot.steps = 1;
+                obj.JointController.SendTraj(qCurrent,qObject);
+            end
+            
+        end
+
+        function resetRobot(obj, robot)
+
+            disp("Resetting");
+            qCurrent = robot.model.getpos; 
+
+            %poseObject = transl(obj.objectCarteason);               
+            %qObject= robot.model.ikcon(poseObject, qCurrent);
+            qObject = robot.qHome;
+
+            robot.armTraj = jtraj(qCurrent, qObject, obj.trajSteps);
+
+
+            robot.previousState = obj.MoveToObject;  % why here?
+            robot.steps = 1;
+        
+            if robot.steps <= obj.trajSteps
+                for i = 1:1:obj.trajSteps
+               
+                    %qCurrent = robot.model.getpos;
+                    %obj.JointController.SendTraj(qCurrent,robot.armTraj(i,:));
+                    
+                    robot.model.animate(robot.armTraj(robot.steps,:));
+                    robot.steps = robot.steps + 1;
+                end 
+                robot.steps = 1;
+                obj.JointController.SendTraj(qCurrent,qObject);
+            end
+            
+        end
+
+        function AddWayPoint(obj, robot, waypoint)
+
+            qCurrent = robot.model.getpos; 
+            qObject = waypoint;
+
+            robot.armTraj = jtraj(qCurrent, qObject, obj.trajSteps);
+
+            robot.previousState = obj.MoveToObject;  % why here?
+            robot.steps = 1;
+        
+            if robot.steps <= obj.trajSteps
+                for i = 1:1:obj.trajSteps
+               
+                    
+                    robot.model.animate(robot.armTraj(robot.steps,:));
+                    robot.steps = robot.steps + 1;
+                end 
+                robot.steps = 1;
+                obj.JointController.SendTraj(qCurrent,qObject);
+            end
+            
+        end
 
         function Recycle(obj, robot)
+            disp("Starting to Recycle");
+            %robot.currentState=obj.LocateObject;
             
             %headCamera = RobotTemplateClass(getenv("ROS_IP"));
 
@@ -157,6 +241,7 @@ classdef Simulation < handle % Passes by reference
                 
                 case obj.LocateObject
                     if (robot.currentState==obj.LocateObject)
+                        
                         obj.headCamera.perceptionFcn(obj.headCamera.subPoint.LatestMessage, obj.headCamera.subCloud.LatestMessage);
                         obj.objectLocation = obj.headCamera.targetPoint;
     
@@ -166,7 +251,8 @@ classdef Simulation < handle % Passes by reference
                         obj.objectCarteason = [obj.objectLocation.X obj.objectLocation.Y obj.objectLocation.Z];
                         disp("Object Located at: ");
                         display(obj.objectCarteason);
-                    end
+
+                    end 
 
                 case obj.MoveToObject
                     if (robot.currentState==obj.MoveToObject && robot.previousState==obj.LocateObject)
@@ -187,13 +273,13 @@ classdef Simulation < handle % Passes by reference
                             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                                 result(i) = IsCollision(robot,robot.armTraj(robot.steps,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
                             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                                
-                                obj.JointController.SendTraj((robot.armTraj(i,:)))
-                                
+                                %qCurrent = robot.model.getpos;
+                                %obj.JointController.SendTraj(qCurrent,robot.armTraj(i,:));
                                 
                                 robot.model.animate(robot.armTraj(robot.steps,:));
                                 robot.steps = robot.steps + 1;
                             end
+                            obj.JointController.SendTraj(qCurrent,qObject);
                             robot.currentState = obj.MoveToBin;
                         else 
                             robot.currentState = obj.MoveToBin;
