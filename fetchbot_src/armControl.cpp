@@ -18,12 +18,12 @@ int main(int argc, char **argv)
 {   ////////////////
     // INPUT POSE //
     ////////////////
-	geometry_msgs::Pose target_pose1;
-    std::cout << "Input Position (x,y,z):\n";
-    std::cout << "    x = "; std::cin >> target_pose1.position.x;
-    std::cout << "    y = "; std::cin >> target_pose1.position.y;
-    std::cout << "    z = "; std::cin >> target_pose1.position.z;
-    target_pose1.orientation.w = 1.0;
+	// geometry_msgs::Pose target_pose1;
+    // std::cout << "Input Position (x,y,z):\n";
+    // std::cout << "    x = "; std::cin >> target_pose1.position.x;
+    // std::cout << "    y = "; std::cin >> target_pose1.position.y;
+    // std::cout << "    z = "; std::cin >> target_pose1.position.z;
+    // target_pose1.orientation.w = 1.0;
 
 	//////////////
 	// INIT ROS //
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 	//////////////////
     // SETUP MOVEIT //
     //////////////////
-    moveit::planning_interface::MoveGroupInterface group("arm");
+    moveit::planning_interface::MoveGroupInterface group("arm_with_torso");
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     ros::Publisher display_publisher = node_handle.advertise<moveit_msgs::DisplayTrajectory>("/move_group/display_planned_path", 1, true);
     moveit_msgs::DisplayTrajectory display_trajectory;
@@ -65,9 +65,25 @@ int main(int argc, char **argv)
     std::vector<double> group_variable_values;
     group.getCurrentState()->copyJointGroupPositions(group.getCurrentState()->getRobotModel()->getJointModelGroup(group.getName()), group_variable_values);
     
+    for (auto g: group_variable_values){
+        std::cout << g << std::endl; 
+    }
+
     // Now, let's modify one of the joints, plan to the new joint
     // space goal and visualize the plan.
-    group_variable_values[0] = -1.0;  
+    //group_variable_values[0] = 0;  
+    //group_variable_values[1] = 1.3200;
+    //group_variable_values[2] = 0.1246;
+    //group_variable_values[3] = 0.7540;
+    //group_variable_values[4] = 0.2;
+    //group_variable_values[5] = 0;
+    //group_variable_values[6] = -0.5700;
+    //group_variable_values[7] = 0.0012;
+    
+
+    // std::cout << "Size of array " << group_variable_values.size() << std::endl; 
+    
+
     group.setJointValueTarget(group_variable_values);
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     moveit::core::MoveItErrorCode success = group.plan(my_plan);

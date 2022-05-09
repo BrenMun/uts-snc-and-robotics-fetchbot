@@ -20,6 +20,9 @@ headCamera = RobotTemplateClass(getenv("ROS_IP"));
 % Generate the Simulation
 simulation = Simulation(fetchBase, workspace, centerpnt, binPoint, headCamera);
 
+% Adding perception
+system 
+
 % Grab object location from camera in ROS
 headCamera.perceptionFcn(headCamera.subPoint.LatestMessage, headCamera.subCloud.LatestMessage);
 object = headCamera.targetPoint;
@@ -32,6 +35,7 @@ simulation.addObject(1,object)
 %simulation.robotFetch.FetchRobotReachVolume() 
 %% Teach for gui control
 simulation.teaching; 
+
 %%
 simulation.getPos()
 %% Recycle Object

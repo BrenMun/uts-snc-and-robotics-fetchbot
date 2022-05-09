@@ -185,6 +185,7 @@ classdef Simulation < handle % Passes by reference
                                 result(i) = IsCollision(robot,robot.armTraj(robot.steps,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
                             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                                 robot.model.animate(robot.armTraj(robot.steps,:));
+                                
                                 robot.steps = robot.steps + 1;
                             end
                             robot.currentState = obj.MoveToBin;

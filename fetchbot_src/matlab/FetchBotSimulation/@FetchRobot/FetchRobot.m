@@ -21,8 +21,7 @@ classdef FetchRobot < handle
         q;
         base;
 
-        
-        
+
         armTraj;
         taskcompleted = false;
 
@@ -31,7 +30,8 @@ classdef FetchRobot < handle
         currentState = 0; 
         targetedBrickID = 0;
         steps = 0; 
-        qHome = [0, 0, 0, 0, 0, 0, 0, 0];
+        %qHome = [0, 0, 0, 0, 0, 0, 0, 0];
+        qHome = [0 1.32 0.7 0.0000290135 -2 -0.000123035 -0.57 0.00123035]
         % qHome =zeros(1,8);
        
 
@@ -111,7 +111,8 @@ function GetFetchRobotRobot(self)
     L(8).qlim = [-360 360]*pi/180; %continuous
 
     L(3).offset = -pi/2;
-    L(5).offset = -pi/2;
+    %L(5).offset = -pi/2; % commented out due to gazebo values being to
+    %differnt or taking into account offset. 
     
     %fetchBot = SerialLink([L(1) L(2) L(3) L(4) L(5) L(6) L(7) L(8)]);
     %fetchBot.base = transl(0,0,0);
