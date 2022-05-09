@@ -18,7 +18,8 @@ for qIndex = 1:size(qMatrix,1)
     for i = 1 : size(tr,3)-1    
         for faceIndex = 1:size(faces,1)
             vertOnPlane = vertex(faces(faceIndex,1)',:);
-            [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)'); 
+            [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)');
+            
             if check == 1 && IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
                 plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
                 display('Intersection');
@@ -74,7 +75,7 @@ function [ transforms ] = GetLinkPoses( q, robot)
 %robot -  seriallink robot model
 %transforms - list of transforms
 
-links = robot.model;
+links = robot.model.links;
 transforms = zeros(4, 4, length(links) + 1);
 transforms(:,:,1) = robot.base;
 

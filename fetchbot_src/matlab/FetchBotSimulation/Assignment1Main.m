@@ -31,7 +31,9 @@ simulation.addObject(1,object)
 %% (Add more layers)
 %simulation.robotFetch.FetchRobotReachVolume() 
 %% Teach for gui control
-%simulation.teaching; 
+simulation.teaching; 
+%%
+simulation.getPos()
 %% Recycle Object
 
 while (taskCompleted == false && eStop == false)

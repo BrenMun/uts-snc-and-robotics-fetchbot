@@ -18,7 +18,7 @@ vertex(6,:)=[lower(1:2),upper(3)];
 vertex(7,:)=[lower(1),upper(2),lower(3)];
 vertex(8,:)=upper;
 
-face=[1,2,3;1,3,7;
+face=[1,2,3;1,3,7;  % should only be 12 triangles, each face(6) is dived up into 2 triangles
      1,6,5;1,7,5;
      1,6,4;1,4,2;
      6,4,8;6,5,8;
