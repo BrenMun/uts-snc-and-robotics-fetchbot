@@ -248,7 +248,7 @@ classdef Simulation < handle % Passes by reference
                         robot.currentState = obj.MoveToObject; 
                         robot.previousState = obj.LocateObject; 
 
-                        obj.objectCarteason = [obj.objectLocation.X obj.objectLocation.Y obj.objectLocation.Z];
+                        obj.objectCarteason = [obj.objectLocation.X obj.objectLocation.Y obj.objectLocation.Z+0.05];
                         disp("Object Located at: ");
                         display(obj.objectCarteason);
 

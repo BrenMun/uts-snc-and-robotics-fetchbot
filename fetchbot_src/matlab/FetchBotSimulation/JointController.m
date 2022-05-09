@@ -70,28 +70,9 @@ classdef JointController
             %send(obj.MyPub,obj.PubMsg);
         end
 
-        function sendTrajMsgs(obj, pos1, pos2 )  % https://au.mathworks.com/matlabcentral/answers/344938-simulink-ros-publishing-jointtrajectory-messages
+        function grip(obj)
+            
           
-          % Create the publisher only on the first function call
-          persistent pub
-          if isempty(pub)
-              pub = rospublisher('/my_joints','arm_controller/follow_joint_trajectory');
-          end
-          
-          % Create an empty message with the joint names
-          msg = rosmessage('arm_controller/follow_joint_trajectory');
-          msg.JointNames = {'joint1','joint2','joint3'};
-          
-          % Fill in the message positions
-          p1 = rosmessage('arm_controller/follow_joint_trajectory');
-          p1.Positions = pos1;
-          msg.Points(1) = p1;
-          p2 = rosmessage('arm_controller/follow_joint_trajectory');
-          p2.Positions = pos2;
-          msg.Points(2) = p2;
-          
-          % Send messages
-          send(pub,msg)
         end
     end
 end
