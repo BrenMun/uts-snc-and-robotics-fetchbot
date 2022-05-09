@@ -187,7 +187,7 @@ classdef Simulation < handle % Passes by reference
                             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                                 result(i) = IsCollision(robot,robot.armTraj(robot.steps,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
                             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                                
+                                robot.armTraj(i,:)
                                 obj.JointController.SendTraj((robot.armTraj(i,:)))
                                 
                                 
