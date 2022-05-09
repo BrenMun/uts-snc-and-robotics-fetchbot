@@ -47,14 +47,32 @@ int main(int argc, char **argv)
     ROS_INFO("Reference frame: %s", group.getPlanningFrame().c_str());
     ROS_INFO("Reference frame: %s", group.getEndEffectorLink().c_str());
 
-    /////////////////////////////
-    // Planning to a Pose goal //
-    /////////////////////////////
-    group.setPoseTarget(target_pose1);
+    // /////////////////////////////
+    // // Planning to a Pose goal //
+    // /////////////////////////////
+    // group.setPoseTarget(target_pose1);
+    // moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    // moveit::core::MoveItErrorCode success = group.plan(my_plan);
+
+    // ROS_INFO("Visualizing plan 1 (pose goal) %s",success?"":"FAILED");
+    // /* Sleep to give Rviz time to visualize the plan. */
+    // sleep(5.0);
+
+    ///////////////////////////////
+    // Planning to a Joint-space //
+    ///////////////////////////////
+    // First get the current set of joint values for the group.
+    std::vector<double> group_variable_values;
+    group.getCurrentState()->copyJointGroupPositions(group.getCurrentState()->getRobotModel()->getJointModelGroup(group.getName()), group_variable_values);
+    
+    // Now, let's modify one of the joints, plan to the new joint
+    // space goal and visualize the plan.
+    group_variable_values[0] = -1.0;  
+    group.setJointValueTarget(group_variable_values);
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     moveit::core::MoveItErrorCode success = group.plan(my_plan);
 
-    ROS_INFO("Visualizing plan 1 (pose goal) %s",success?"":"FAILED");
+    ROS_INFO("Visualizing plan 2 (joint space goal) %s",success?"":"FAILED");
     /* Sleep to give Rviz time to visualize the plan. */
     sleep(5.0);
 
