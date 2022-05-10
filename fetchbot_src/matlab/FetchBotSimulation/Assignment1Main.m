@@ -37,26 +37,24 @@ simulation.addObject(1,object)
 simulation.teaching; 
 %% Get arms current position
 simulation.getPos()
+
 %% Test movement
-%simulation.TestMovement(simulation.robotFetch);
 qObject = [0    0.8219   -0.0780   -0.8516   -1.2403    1.0248   -1.4547    2.6003];
 simulation.MoveArm(simulation.robotFetch, qObject);
+
 %% add way point
 waypoint = [0    0.8219   -0.8139   -3.3648   -1.1505   -1.7399   -2.0217 2.6003];
-%simulation.AddWayPoint(simulation.robotFetch, waypoint);
-
 simulation.MoveArm(simulation.robotFetch, waypoint);
 
 %% check current pos for collisions with table
 simulation.checkCollisions(simulation.robotFetch);
 
 %% simulation reset
-% simulation.resetRobot(simulation.robotFetch);
 qObject = simulation.robotFetch.qHome;
 simulation.MoveArm(simulation.robotFetch, qObject);
 
 %% testing grip
-simulation.grip(0.0);
+simulation.grip(0.0); % 0.0 closed, 1.0 open
 
 %% Recycle Object
 

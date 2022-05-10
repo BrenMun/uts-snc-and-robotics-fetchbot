@@ -270,7 +270,6 @@ classdef Simulation < handle % Passes by reference
             %waypoint = [0    0.9346    0.0972    0.1257   -2.0000   -0.1258   -0.5700    0.0012];
             %obj.addWayPoint(obj.robotFetch, waypoint);
             %pause(2);
-            
             waypoint1 = [0    0.9346    0.0698    1.2567   -0.9643    0.2512   -0.8754    0.001];
             %obj.addWayPoint(obj.robotFetch, waypoint);
             %pause(2);
@@ -308,14 +307,16 @@ classdef Simulation < handle % Passes by reference
                 end 
                 %robot.steps = 1;
                 obj.JointController.SendTraj(qCurrent,q2);
-                %pause(1);
+                pause(1);
             %end
 
         end
 
+       
 
         function Recycle(obj, robot)
             disp("Starting to Recycle");
+            %robot.currentState=obj.LocateObject;
             
             %headCamera = RobotTemplateClass(getenv("ROS_IP"));
 
@@ -362,9 +363,6 @@ classdef Simulation < handle % Passes by reference
                         robot.steps = 1;
 
                         obj.MoveArm(robot, qObject)
-
-                        robot.currentState = obj.MoveToBin;
-                        robot.steps = 1;
                     
 %                         if robot.steps <= obj.trajSteps
 %                             for i = 1:1:obj.trajSteps
@@ -385,22 +383,20 @@ classdef Simulation < handle % Passes by reference
 %                             robot.previousState = obj.MoveToObject; %duplicate?
 %                             robot.steps = 1;
 %                         end
-                        
+                        robot.currentState = obj.MoveToBin;
+                        robot.steps = 1;
                     end
 
                 case obj.MoveToBin
                     if (robot.currentState==obj.MoveToBin && robot.previousState==obj.MoveToObject)
-    
-                        % Wait until message the object has been grasped
+
                         % Move to way points to be above bin
                            disp("Moving Object to Recycling Bin");
-                           % move arm through way points
                         % let go
                            disp("Dropping Object");
-                           obj.grip(1.0);
                         % scan for another object?
 
-                        
+                        % So i need to build waypoints like LAB5
                         
                         
                     end
