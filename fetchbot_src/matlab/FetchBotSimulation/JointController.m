@@ -31,7 +31,7 @@ classdef JointController
             };
             
             %Set up the gripper action server
-            [gripAct,gripGoal] = rosactionclient('gripper_controller/gripper_action');
+            [obj.gripAct,obj.gripGoal] = rosactionclient('gripper_controller/gripper_action');
             waitForServer(obj.gripAct);
         end
         
@@ -64,11 +64,12 @@ classdef JointController
             %send(obj.MyPub,obj.PubMsg);
         end
 
-        function grip(obj)
+        function grip(obj, position)
             gripperCommand = rosmessage('control_msgs/GripperCommand');
-            gripperCommand.Position = 0.0;  
-            gripGoal.Command = gripperCommand;
-            sendGoalAndWait(gripAct,gripGoal);
+            %gripperCommand.Position = 0.0;  
+            gripperCommand.Position = position;
+            obj.gripGoal.Command = gripperCommand;
+            sendGoalAndWait(obj.gripAct,obj.gripGoal);
         end
     end
 end
