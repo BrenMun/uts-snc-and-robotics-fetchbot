@@ -9,6 +9,20 @@
 #include <geometry_msgs/PointStamped.h>
 using namespace sensor_msgs;
 
+//HSV Range Struct
+namespace hsv{
+    struct HSVColor{
+        int h;
+        int s;
+        int v;
+    };
+
+    struct HSVRange{
+        HSVColor min;
+        HSVColor max;
+    };
+}
+
 class HeadCamera
 {
     private:
@@ -19,6 +33,7 @@ class HeadCamera
     typedef message_filters::sync_policies::ApproximateTime<Image, PointCloud2> MySyncPolicy;
     typedef message_filters::Synchronizer<MySyncPolicy> Sync;
     boost::shared_ptr<Sync> sync_;
+
     public:
     HeadCamera();
     void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth);
