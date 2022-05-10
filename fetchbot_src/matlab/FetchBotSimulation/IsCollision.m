@@ -27,6 +27,7 @@ for qIndex = 1:size(qMatrix,1)
                 if returnOnceFound
                     return
                 end
+                
             end
         end    
     end

@@ -36,6 +36,8 @@ classdef Simulation < handle % Passes by reference
 
         JointController
 
+       
+
     end
 
     properties(Constant)
@@ -84,7 +86,17 @@ classdef Simulation < handle % Passes by reference
                   
             % Add Table, Cones, Walls
             obj.environment = EnvironmentSetUp(obj.workspace, 2.25, centerpnt);
-            
+            axis equal;
+
+%             side = 1;
+%             plotOptions.plotFaces = true;
+%             [vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
+%             axis equal
+%             camlight
+%             obj.tableFaces = faces;
+%             obj.tableVertices = vertex; 
+%             obj.tableFaceNormals = faceNormals; 
+
             % Adding class for sending messages to ROS
             obj.JointController = JointController;
             % Adding bricks
@@ -168,7 +180,7 @@ classdef Simulation < handle % Passes by reference
                
                     %qCurrent = robot.model.getpos;
                     %obj.JointController.SendTraj(qCurrent,robot.armTraj(i,:));
-                    
+                    result(i) = IsCollision(robot,robot.armTraj(robot.steps,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
                     robot.model.animate(robot.armTraj(robot.steps,:));
                     robot.steps = robot.steps + 1;
                 end 
@@ -198,7 +210,7 @@ classdef Simulation < handle % Passes by reference
                
                     %qCurrent = robot.model.getpos;
                     %obj.JointController.SendTraj(qCurrent,robot.armTraj(i,:));
-                    
+                    result(i) = IsCollision(robot,robot.armTraj(robot.steps,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
                     robot.model.animate(robot.armTraj(robot.steps,:));
                     robot.steps = robot.steps + 1;
                 end 
@@ -221,6 +233,7 @@ classdef Simulation < handle % Passes by reference
             if robot.steps <= obj.trajSteps
                 for i = 1:1:obj.trajSteps
                
+                    result(i) = IsCollision(robot,robot.armTraj(robot.steps,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
                     
                     robot.model.animate(robot.armTraj(robot.steps,:));
                     robot.steps = robot.steps + 1;
@@ -230,6 +243,22 @@ classdef Simulation < handle % Passes by reference
             end
             
         end
+        
+        function checkCollisions(obj, robot)
+            q = obj.robotFetch.model.getpos;
+            result = IsCollision(robot,q,obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
+            if result == 1
+                disp(['Intersection at step ', num2str(i)]);
+                q;
+                p3.fkine(q)
+                
+            else
+                disp('No intersection');
+                result
+            end
+        end
+
+       
 
         function Recycle(obj, robot)
             disp("Starting to Recycle");

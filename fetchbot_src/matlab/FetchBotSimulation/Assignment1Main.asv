@@ -4,15 +4,15 @@ clf; clc; clear all;
 
 % Variables
 taskCompleted = false; %Boolean for task completed 
-workspace = [-0.2 1.7 -1 1 0.2 1.5]; % workspace for matlab simulation
-centerpnt = [1,0,0.25];  % Centre point for table proxy in matlab
+workspace = [-2 2 -1 1 0.2 1.5]; % workspace for matlab simulation
+centerpnt = [2,0,-0.5];  % Centre point for table proxy in matlab
 binPoint = [-0.2,0.5,0]; % bin centre point 
 
 % estop functionality
 eStop = false; 
 
 % Add starting Poses for Fetch Robot
-fetchBase = transl(0,0,0.7) *trotz(pi);
+fetchBase = transl(1,0,0) *trotz(pi);
 
 % Creates object conenct to ROS node for head camera inform                              ation
 headCamera = RobotTemplateClass(getenv("ROS_IP"));
