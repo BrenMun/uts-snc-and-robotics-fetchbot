@@ -262,6 +262,18 @@ classdef Simulation < handle % Passes by reference
             obj.JointController.grip(position);
         end
 
+        function moveThroughWaypoints(obj)
+            waypoint = [0    0.9346    0.0972    0.1257   -2.0000   -0.1258   -0.5700    0.0012];
+            obj.addWayPoint(obj.robotFetch, waypoint);
+            %pause(2);
+            waypoint = [0    0.9346    0.0698    1.2567   -0.9643    0.2512   -0.8754    0.001];
+            obj.addWayPoint(obj.robotFetch, waypoint);
+            %pause(2);
+            waypoint = [0    0.9346    0.0698    1.5080   -0.3339    0.1255   -2.0972    1.2579];
+            obj.addWayPoint(obj.robotFetch, waypoint);
+
+        end
+
        
 
         function Recycle(obj, robot)
@@ -281,18 +293,29 @@ classdef Simulation < handle % Passes by reference
                         robot.currentState = obj.MoveToObject; 
                         robot.previousState = obj.LocateObject; 
 
-                        obj.objectCarteason = [obj.objectLocation.X obj.objectLocation.Y obj.objectLocation.Z+0.05];
+                        obj.objectCarteason = [obj.objectLocation.X obj.objectLocation.Y obj.objectLocation.Z];
                         disp("Object Located at: ");
                         display(obj.objectCarteason);
+                        obj.objectCarteason
 
                     end 
 
                 case obj.MoveToObject
                     if (robot.currentState==obj.MoveToObject && robot.previousState==obj.LocateObject)
                         disp("Moving to collect object");
+
+                        %% move through way points
+                        obj.moveThroughWaypoints();
+
                         qCurrent = robot.model.getpos; 
-                        % objectCarteason = [obj.objectLocation.X obj.objectLocation.Y obj.objectLocation.Z];
-                        poseObject = transl(obj.objectCarteason);
+                        % objectCarteason = [obj.objectLocation.X obj.objectLocation.Y obj.objectLocation.Z];+
+                        
+                        offsetObject = [obj.objectCarteason(1),... %% making offset to graps object
+                                        obj.objectCarteason(2)+0.15,...
+                                        obj.objectCarteason(3)+0.15];
+
+                        %poseObject = transl(obj.objectCarteason);
+                        poseObject = transl(offsetObject)* troty(pi);
                                                 
                         qObject= robot.model.ikcon(poseObject, qCurrent);
                         robot.armTraj = jtraj(qCurrent, qObject, obj.trajSteps);

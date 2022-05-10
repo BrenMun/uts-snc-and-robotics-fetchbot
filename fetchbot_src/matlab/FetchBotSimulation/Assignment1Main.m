@@ -1,4 +1,4 @@
-%% Ian Chivers 13283837 Assignment 1
+%% Assignment 2
 clf; clc; clear all;
 % profile on; 
 
@@ -49,6 +49,9 @@ pause(2);
 waypoint = [0    0.9346    0.0698    1.5080   -0.3339    0.1255   -2.0972    1.2579];
 simulation.addWayPoint(simulation.robotFetch, waypoint);
 
+%%
+simulation.moveThroughWaypoints(); 
+
 %% check current pos for collisions with table
 simulation.checkCollisions(simulation.robotFetch);
 
@@ -56,7 +59,7 @@ simulation.checkCollisions(simulation.robotFetch);
 simulation.resetRobot(simulation.robotFetch);
 
 %% testing grip
-simulation.grip(1.0);
+simulation.grip(0.0);
 
 %% Recycle Object
 
