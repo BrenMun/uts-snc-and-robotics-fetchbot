@@ -1,16 +1,16 @@
 classdef JointController
     %SANITISE
-    
     properties
         q=[]; 
         GoalMsg;
-        Arm; 
+        Arm;
+        gripAct;
+        gripGoal;
     end
     
     methods
         % https://au.mathworks.com/help/robotics/ug/control-pr2-arm-movements-using-actions-and-ik.html
         function obj = JointController()
-
             %jointSub = rossubscriber('/joint_states');
             %jntState = receive(jointSub);
             
@@ -19,33 +19,29 @@ classdef JointController
             waitForServer(obj.Arm);
             
             %Label the joint names for the fetch robot
-
-            obj.GoalMsg.Trajectory.JointNames = {'torso_lift_joint',...
-                                                'shoulder_pan_joint',...
-                                                'shoulder_lift_joint',...
-                                                'upperarm_roll_joint',...
-                                                'elbow_flex_joint',...
-                                                'forearm_roll_joint',...
-                                                'wrist_flex_joint',...
-                                                'wrist_roll_joint'};
+            obj.GoalMsg.Trajectory.JointNames = {
+                'torso_lift_joint',...
+                'shoulder_pan_joint',...
+                'shoulder_lift_joint',...
+                'upperarm_roll_joint',...
+                'elbow_flex_joint',...
+                'forearm_roll_joint',...
+                'wrist_flex_joint',...
+                'wrist_roll_joint'
+            };
             
-    
+            %Set up the gripper action server
+            [gripAct,gripGoal] = rosactionclient('gripper_controller/gripper_action');
+            waitForServer(obj.gripAct);
         end
         
         function SendTraj(obj, p1,p2)
-
             %Get the current joint states for the joints
-%             numJoints = size(obj.GoalMsg.Trajectory.JointNames, 2); 
-%             idx = ismember(jntState.Name, obj.GoalMsg.Trajectory.JointNames);
-%             curPos = jntState.Position(idx);   
-%             %curPos = jntState;
-%             
-%             %Make a point for the robot to go to                                
-%             trajPoint1 = rosmessage('trajectory_msgs/JointTrajectoryPoint');
-%             trajPoint1.Positions = curPos;
-%             trajPoint1.Positions(1) = 0;
-%             trajPoint1.Velocities = zeros(1, 8);
-%             trajPoint1.TimeFromStart = rosduration(1.0);
+            % numJoints = size(obj.GoalMsg.Trajectory.JointNames, 2); 
+            % idx = ismember(jntState.Name, obj.GoalMsg.Trajectory.JointNames);
+            % curPos = jntState.Position(idx);   
+            % %curPos = jntState;
+
             % Point 1
             tjPoint1 = rosmessage('trajectory_msgs/JointTrajectoryPoint');
             tjPoint1.Positions = p1;        % zeros(1,8);
@@ -58,10 +54,8 @@ classdef JointController
             tjPoint2.Velocities = zeros(1,8);
             tjPoint2.TimeFromStart = rosduration(2.0);
 
-            obj.GoalMsg.Trajectory.Points = [tjPoint1,tjPoint2];
-
-            
             %Execute the action
+            obj.GoalMsg.Trajectory.Points = [tjPoint1,tjPoint2];
             sendGoalAndWait(obj.Arm, obj.GoalMsg);
             
             %rosshutdown;
@@ -72,7 +66,6 @@ classdef JointController
 
         function grip(obj)
             
-          
         end
     end
 end
