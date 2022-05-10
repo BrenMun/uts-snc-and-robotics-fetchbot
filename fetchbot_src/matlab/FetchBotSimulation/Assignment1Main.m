@@ -20,6 +20,9 @@ headCamera = RobotTemplateClass(getenv("ROS_IP"));
 % Generate the Simulation
 simulation = Simulation(fetchBase, workspace, centerpnt, binPoint, headCamera);
 
+% calling percetion 
+%system('cd /home/ian/git/uts-snc-and-robotics-fetchbot/fetchbot_src/build && rosrun fetchbot perception')
+%pause(5)
 % Grab object location from camera in ROS
 headCamera.perceptionFcn(headCamera.subPoint.LatestMessage, headCamera.subCloud.LatestMessage);
 object = headCamera.targetPoint;
@@ -35,28 +38,22 @@ simulation.teaching;
 %% Get arms current position
 simulation.getPos()
 %% Test movement
-simulation.TestMovement(simulation.robotFetch);
+%simulation.TestMovement(simulation.robotFetch);
+qObject = [0    0.8219   -0.0780   -0.8516   -1.2403    1.0248   -1.4547    2.6003];
+simulation.MoveArm(simulation.robotFetch, qObject);
 %% add way point
 waypoint = [0    0.8219   -0.8139   -3.3648   -1.1505   -1.7399   -2.0217 2.6003];
-simulation.AddWayPoint(simulation.robotFetch, waypoint);
-%% Testing Collision detection - use way point interpolation
-waypoint = [0    0.9346    0.0972    0.1257   -2.0000   -0.1258   -0.5700    0.0012];
-simulation.addWayPoint(simulation.robotFetch, waypoint);
-pause(2);
-waypoint = [0    0.9346    0.0698    1.2567   -0.9643    0.2512   -0.8754    0.001];
-simulation.addWayPoint(simulation.robotFetch, waypoint);
-pause(2);
-waypoint = [0    0.9346    0.0698    1.5080   -0.3339    0.1255   -2.0972    1.2579];
-simulation.addWayPoint(simulation.robotFetch, waypoint);
+%simulation.AddWayPoint(simulation.robotFetch, waypoint);
 
-%%
-simulation.moveThroughWaypoints(); 
+simulation.MoveArm(simulation.robotFetch, waypoint);
 
 %% check current pos for collisions with table
 simulation.checkCollisions(simulation.robotFetch);
 
 %% simulation reset
-simulation.resetRobot(simulation.robotFetch);
+% simulation.resetRobot(simulation.robotFetch);
+qObject = simulation.robotFetch.qHome;
+simulation.MoveArm(simulation.robotFetch, qObject);
 
 %% testing grip
 simulation.grip(0.0);

@@ -249,9 +249,89 @@ result = true(steps,1);
 for i = 1: steps
     result(i) = IsCollision(robotFetch,qMatrix(i,:),faces,vertex,faceNormals,false);
     robotFetch.model.animate(qMatrix(i,:));
+      if result == 1
+        disp(['Intersection at step ', num2str(i)]);
+        break;
+    end
+end
+%% lab 5 directly
+
+clf 
+clc 
+clear
+% https://www.youtube.com/watch?v=CXw1udCyBvE&ab_channel=mewgen
+% https://www.youtube.com/watch?v=tce28zET9kI&ab_channel=mewgen
+
+% 2.1) Create a 3 link planar robot with all 3 links having a = 1m, leave the base at eye(4).
+fetchBase = transl(0.5,-1,0) *trotz(pi);
+workspace = [-1 3 -1 1 -0.5 1.5];
+L1 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi]);
+L2 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi]);
+L3 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi]);       
+%robot = SerialLink([L1 L2 L3],'name','myRobot');    
+robotFet = FetchRobot(fetchBase,workspace);
+robot = robotFet.model;
+q = zeros(1,8);                                                     % Create a vector of initial joint angles        
+scale = 0.5;
+%workspace = [-2 2 -2 2 -0.05 2];                                       % Set the size of the workspace when drawing the robot
+robot.plot(q,'workspace',workspace,'scale',scale);                  % Plot the robot
+
+
+% 2.2) Put a cube with sides 1.5m in the environment that is centered at [2,0,-0.5].
+% 2.3) Use teach and note when the links of the robot can collide with 4 of the planes:
+
+centerpnt = [2,0,-0.5];
+side = 1.5;
+plotOptions.plotFaces = true;
+[vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
+axis equal
+camlight
+
+% Get the transform of every joint (i.e. start and end of every link)
+L = robot.links(end-6:end); % gets robot links
+tr = zeros(4,4,length(L)+1); % initialised transfor as 4 by 4, and number of joints plus one
+tr(:,:,1) = robot.base;
+
+for i = 1 : length(L)
+    tr(:,:,i+1) = tr(:,:,i) * trotz(q(i)+L(i).offset) * transl(0,0,L(i).d) * transl(L(i).a,0,0) * trotx(L(i).alpha);
 end
 
+% 2.5: Go through each link and also each triangle face
+for i = 1 : size(tr,3)-1    
+    for faceIndex = 1:size(faces,1)
+        vertOnPlane = vertex(faces(faceIndex,1)',:);
+        [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)'); 
+        if check == 1 && IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
+            plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
+            display('Intersection');
+        end
+        
 
+    end    
+end
+%%
+
+%  Go through until there are no step sizes larger than 1 degree using diff(rad2deg(jtraj(q1,q2,steps))
+q1 = [0,0,0,0,0,0,0,0];
+q2 = [0, pi/4,0,0,0,0,0,0];
+steps = 2;
+while ~isempty(find(1 < abs(diff(rad2deg(jtraj(q1,q2,steps)))),1))
+    steps = steps + 1;
+end % this while loop, loops until it finds enough steps less and 1 degree
+qMatrix = jtraj(q1,q2,steps);
+%
+
+% 2.7)Check each of the joint states in the trajectory to work out which 
+% ones are in collision. Return a logical vector of size steps which 
+% contains 0 = no collision (safe) and 1 = yes collision (Unsafe). 
+% You may like to use this structure.
+result = true(steps,1);
+for i = 1: steps
+    result(i) = IsCollision(robotFet,qMatrix(i,:),faces,vertex,faceNormals,false);
+    robot.animate(qMatrix(i,:));
+end
+% This finds the joint states that are in collision
+% inside is collision, 
 
 
 %% testing lab 6 stuff
@@ -341,10 +421,11 @@ for qIndex = 1:size(qMatrix,1)
 
     % Go through each link and also each triangle face
     for i = 1 : size(tr,3)-1    
+        
         for faceIndex = 1:size(faces,1)
             vertOnPlane = vertex(faces(faceIndex,1)',:);
-            [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)'); 
-            
+            [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)');
+            intersectP
             if check == 1 && IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
                 plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
                 display('Intersection');
@@ -353,10 +434,15 @@ for qIndex = 1:size(qMatrix,1)
                     return
                 end
             end
+            
         end    
     end
 end
 end
+% Check == 0 if there is no intersection
+% Check == 1 if there is a line plane intersection between the two points
+% Check == 2 if the segment lies in the plane (always intersecting)
+% Check == 3 if there is intersection point which lies outside line segment
 
 %% GetLinkPoses
 % q - robot joint angles
@@ -364,7 +450,7 @@ end
 % transforms - list of transforms
 function [ transforms ] = GetLinkPoses( q, robot)
 
-links = robot.model.links;
+links = robot.model.links(end-6:end);
 transforms = zeros(4, 4, length(links) + 1);
 transforms(:,:,1) = robot.base;
 

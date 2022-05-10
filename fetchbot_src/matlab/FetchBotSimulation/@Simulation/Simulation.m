@@ -31,6 +31,7 @@ classdef Simulation < handle % Passes by reference
         wallX = [];
         wallY = [];
         wallZ = [];
+        steps; % for interpolation
 
         objectCarteason;
 
@@ -182,6 +183,7 @@ classdef Simulation < handle % Passes by reference
                     %obj.JointController.SendTraj(qCurrent,robot.armTraj(i,:));
                     result(i) = IsCollision(robot,robot.armTraj(robot.steps,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
                     robot.model.animate(robot.armTraj(robot.steps,:));
+                    drawnow(); 
                     robot.steps = robot.steps + 1;
                 end 
                 robot.steps = 1;
@@ -212,6 +214,7 @@ classdef Simulation < handle % Passes by reference
                     %obj.JointController.SendTraj(qCurrent,robot.armTraj(i,:));
                     result(i) = IsCollision(robot,robot.armTraj(robot.steps,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
                     robot.model.animate(robot.armTraj(robot.steps,:));
+                    drawnow();
                     robot.steps = robot.steps + 1;
                 end 
                 robot.steps = 1;
@@ -236,6 +239,7 @@ classdef Simulation < handle % Passes by reference
                     result(i) = IsCollision(robot,robot.armTraj(robot.steps,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
                     
                     robot.model.animate(robot.armTraj(robot.steps,:));
+                    drawnow();
                     robot.steps = robot.steps + 1;
                 end 
                 robot.steps = 1;
@@ -263,14 +267,47 @@ classdef Simulation < handle % Passes by reference
         end
 
         function moveThroughWaypoints(obj)
-            waypoint = [0    0.9346    0.0972    0.1257   -2.0000   -0.1258   -0.5700    0.0012];
-            obj.addWayPoint(obj.robotFetch, waypoint);
+            %waypoint = [0    0.9346    0.0972    0.1257   -2.0000   -0.1258   -0.5700    0.0012];
+            %obj.addWayPoint(obj.robotFetch, waypoint);
             %pause(2);
-            waypoint = [0    0.9346    0.0698    1.2567   -0.9643    0.2512   -0.8754    0.001];
-            obj.addWayPoint(obj.robotFetch, waypoint);
+            waypoint1 = [0    0.9346    0.0698    1.2567   -0.9643    0.2512   -0.8754    0.001];
+            %obj.addWayPoint(obj.robotFetch, waypoint);
             %pause(2);
-            waypoint = [0    0.9346    0.0698    1.5080   -0.3339    0.1255   -2.0972    1.2579];
-            obj.addWayPoint(obj.robotFetch, waypoint);
+            waypoint2 = [0    0.9346    0.0698    1.5080   -0.3339    0.1255   -2.0972    1.2579];
+            %obj.addWayPoint(obj.robotFetch, waypoint);
+
+            obj.MoveArm(obj.robotFetch, waypoint1);
+            obj.MoveArm(obj.robotFetch, waypoint2);
+
+        end
+
+        function MoveArm(obj, robot, qEnd)
+
+            %  Go through until there are no step sizes larger than 1 degree using diff(rad2deg(jtraj(q1,q2,steps))
+            qCurrent = robot.model.getpos;
+            q2 = qEnd;
+            qWaypoints = [qCurrent, q2];
+            qMatrix = obj.FineInterpolation(qCurrent, q2, 0.5);
+            %qMatrix = obj.InterpolateWaypointRadians(qWaypoints,deg2rad(5));
+
+            robot.steps = 1;
+
+            result = true(obj.steps,1);
+        
+            %if robot.steps <= obj.trajSteps
+                %for i = 1:1:obj.trajSteps
+                for i = 1: obj.steps
+               
+                    result(i) = IsCollision(robot,qMatrix(i,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
+                    
+                    robot.model.animate(qMatrix(i,:));
+                    drawnow();
+                    robot.steps = robot.steps + 1;
+                end 
+                %robot.steps = 1;
+                obj.JointController.SendTraj(qCurrent,q2);
+                pause(1);
+            %end
 
         end
 
@@ -304,15 +341,15 @@ classdef Simulation < handle % Passes by reference
                     if (robot.currentState==obj.MoveToObject && robot.previousState==obj.LocateObject)
                         disp("Moving to collect object");
 
-                        %% move through way points
+                        % move through way points
                         obj.moveThroughWaypoints();
 
                         qCurrent = robot.model.getpos; 
                         % objectCarteason = [obj.objectLocation.X obj.objectLocation.Y obj.objectLocation.Z];+
                         
-                        offsetObject = [obj.objectCarteason(1),... %% making offset to graps object
-                                        obj.objectCarteason(2)+0.15,...
-                                        obj.objectCarteason(3)+0.15];
+                        offsetObject = [obj.objectCarteason(1)+0.01,... %% making offset to graps object
+                                        obj.objectCarteason(2),...
+                                        obj.objectCarteason(3)+0.3];
 
                         %poseObject = transl(obj.objectCarteason);
                         poseObject = transl(offsetObject)* troty(pi);
@@ -333,6 +370,7 @@ classdef Simulation < handle % Passes by reference
                                 %obj.JointController.SendTraj(qCurrent,robot.armTraj(i,:));
                                 
                                 robot.model.animate(robot.armTraj(robot.steps,:));
+                                
                                 robot.steps = robot.steps + 1;
                             end
                             obj.JointController.SendTraj(qCurrent,qObject);
@@ -363,7 +401,37 @@ classdef Simulation < handle % Passes by reference
             end
 
         end
+%%
+%% FineInterpolation
+% Use results from Q2.6 to keep calling jtraj until all step sizes are
+% smaller than a given max steps size
+function qMatrix = FineInterpolation(obj,q1,q2,maxStepRadians)
+if nargin < 3
+    maxStepRadians = deg2rad(1);
+end
+    
+steps = 2;
+while ~isempty(find(maxStepRadians < abs(diff(jtraj(q1,q2,steps))),1))
+    steps = steps + 1;
+end
+qMatrix = jtraj(q1,q2,steps);
+disp("Step count")
+obj.steps = steps;
+steps
+end
 
+%% InterpolateWaypointRadians
+% Given a set of waypoints, finely intepolate them
+function qMatrix = InterpolateWaypointRadians(obj, waypointRadians,maxStepRadians)
+if nargin < 2
+    maxStepRadians = deg2rad(1);
+end
+
+qMatrix = [];
+for i = 1: size(waypointRadians,1)-1
+    qMatrix = [qMatrix ; obj.FineInterpolation(waypointRadians(i,:),waypointRadians(i+1,:),maxStepRadians)]; %#ok<AGROW>
+end
+end
 
 
 %%        
