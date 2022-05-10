@@ -39,14 +39,14 @@ simulation.TestMovement(simulation.robotFetch);
 %% add way point
 waypoint = [0    0.8219   -0.8139   -3.3648   -1.1505   -1.7399   -2.0217 2.6003];
 simulation.AddWayPoint(simulation.robotFetch, waypoint);
-%% Testing Collision detection
-waypoint = [0 0 0 0 0 0 0 0];
+%% Testing Collision detection - use way point interpolation
+waypoint = [0    0.9346    0.0972    0.1257   -2.0000   -0.1258   -0.5700    0.0012];
 simulation.addWayPoint(simulation.robotFetch, waypoint);
-pause(5);
-waypoint = [0 0 0 0 0.5 0 0 0];
+pause(2);
+waypoint = [0    0.9346    0.0698    1.2567   -0.9643    0.2512   -0.8754    0.001];
 simulation.addWayPoint(simulation.robotFetch, waypoint);
-pause(5);
-waypoint = [0 0 0 0 -0.66 0 0 0];
+pause(2);
+waypoint = [0    0.9346    0.0698    1.5080   -0.3339    0.1255   -2.0972    1.2579];
 simulation.addWayPoint(simulation.robotFetch, waypoint);
 
 %% check current pos for collisions with table

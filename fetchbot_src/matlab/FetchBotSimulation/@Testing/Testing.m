@@ -223,29 +223,18 @@ for i = 1 : length(L)
     tr(:,:,i+1) = tr(:,:,i) * trotz(q(i)+L(i).offset) * transl(0,0,L(i).d) * transl(L(i).a,0,0) * trotx(L(i).alpha);
 end
 
-% for i = 1 : size(tr,3)-1    
-%     for faceIndex = 1:size(faces,1)
-%         vertOnPlane = vertex(faces(faceIndex,1)',:);
-%         [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)'); 
-%         if check == 1 && IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
-%             plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
-%             display('Intersection');
-%         end
-%     end    
-% end
+for i = 1 : size(tr,3)-1    
+    for faceIndex = 1:size(faces,1)
+        vertOnPlane = vertex(faces(faceIndex,1)',:);
+        [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)'); 
+        if check == 1 && IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
+            plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
+            display('Intersection');
+        end
+    end    
+end
 
-jointTr = tr(:,:,2); %is this the second joint???
-effTr = robotFetch.model.fkine(q);
-planeNormal = [2,0,0]; %for X = 5m
-pointOnPlane = [2,0,0];%unless given
-startP = jointTr(1:3,4)';
-endP = effTr(1:3,4)';
-[intersectionPoint,check] = LinePlaneIntersection(planeNormal,pointOnPlane,startP,endP)
 
-% Check == 0 if there is no intersection
-% Check == 1 if there is a line plane intersection between the two points
-% Check == 2 if the segment lies in the plane (always intersecting)
-% Check == 3 if there is intersection point which lies outside line segment
 
 %%
 q1 = q;
