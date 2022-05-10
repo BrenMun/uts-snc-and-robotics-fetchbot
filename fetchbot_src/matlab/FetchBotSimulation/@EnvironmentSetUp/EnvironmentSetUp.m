@@ -16,6 +16,7 @@ classdef EnvironmentSetUp < handle
     tableVertices;
     tableFaces;
     tableFaceNormals;
+    
 
 
     end

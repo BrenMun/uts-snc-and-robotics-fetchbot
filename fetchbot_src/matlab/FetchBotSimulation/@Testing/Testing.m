@@ -190,4 +190,250 @@ show(iiwa)
 %show(iiwa,q(:,firstCollisionIdx));
 %exampleHelperHighlightCollisionBodies(iiwa,configCollisionPairs{firstCollisionIdx}+1,gca);
 
-%% 
+%% testing collision detetion with fetch bot
+clc
+clear all
+clf 
+
+fetchBase = transl(1,0,0) *trotz(pi);
+centerpnt = [2,0,-0.5];
+
+workspace = [-1 3 -1 1 -0.5 1.5];
+
+robotFetch = FetchRobot(fetchBase,workspace);
+q = robotFetch.qHome;
+
+side = 1;
+plotOptions.plotFaces = true;
+[vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
+axis equal
+camlight
+
+
+
+
+%%
+robotFetch.teaching;
+%%
+L = robotFetch.model.links; % gets robot links
+tr = zeros(4,4,length(L) + 1+1); % initialised transfor as 4 by 4, and number of joints plus one
+tr(:,:,1) = fetchBase;
+
+for i = 1 : length(L)
+    tr(:,:,i+1) = tr(:,:,i) * trotz(q(i)+L(i).offset) * transl(0,0,L(i).d) * transl(L(i).a,0,0) * trotx(L(i).alpha);
+end
+
+% for i = 1 : size(tr,3)-1    
+%     for faceIndex = 1:size(faces,1)
+%         vertOnPlane = vertex(faces(faceIndex,1)',:);
+%         [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)'); 
+%         if check == 1 && IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
+%             plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
+%             display('Intersection');
+%         end
+%     end    
+% end
+
+jointTr = tr(:,:,2); %is this the second joint???
+effTr = robotFetch.model.fkine(q);
+planeNormal = [2,0,0]; %for X = 5m
+pointOnPlane = [2,0,0];%unless given
+startP = jointTr(1:3,4)';
+endP = effTr(1:3,4)';
+[intersectionPoint,check] = LinePlaneIntersection(planeNormal,pointOnPlane,startP,endP)
+
+% Check == 0 if there is no intersection
+% Check == 1 if there is a line plane intersection between the two points
+% Check == 2 if the segment lies in the plane (always intersecting)
+% Check == 3 if there is intersection point which lies outside line segment
+
+%%
+q1 = q;
+q2 = [0    0.1639    1.4362   -0.1256   -1.7749   -0.0001   -0.5700    0.0012];
+steps = 2;
+while ~isempty(find(1 < abs(diff(rad2deg(jtraj(q1,q2,steps)))),1))
+    steps = steps + 1;
+end % this while loop, loops until it finds enough steps less and 1 degree
+qMatrix = jtraj(q1,q2,steps);
+
+result = true(steps,1);
+for i = 1: steps
+    result(i) = IsCollision(robotFetch,qMatrix(i,:),faces,vertex,faceNormals,false);
+    robotFetch.model.animate(qMatrix(i,:));
+end
+
+
+
+
+%% testing lab 6 stuff
+
+clc
+clear all
+clf 
+
+fetchBase = transl(0,0,0) *trotz(pi);
+centerpnt = [2,0,-0.5];
+
+workspace = [-1 3 -1 1 -0.5 1.5];
+
+robotFetch = FetchRobot(fetchBase,workspace);
+q = robotFetch.qHome;
+
+% One side of the cube
+[Y,Z] = meshgrid(-0.75:0.05:0.75,-0.75:0.05:0.75);
+sizeMat = size(Y);
+X = repmat(0.75,sizeMat(1),sizeMat(2));
+oneSideOfCube_h = surf(X,Y,Z);
+
+% Combine one surface as a point cloud
+cubePoints = [X(:),Y(:),Z(:)];
+
+% Make a cube by rotating the single side by 0,90,180,270, and around y to make the top and bottom faces
+cubePoints = [ cubePoints ...
+             ; cubePoints * rotz(pi/2)...
+             ; cubePoints * rotz(pi) ...
+             ; cubePoints * rotz(3*pi/2) ...
+             ; cubePoints * roty(pi/2) ...
+             ; cubePoints * roty(-pi/2)]; 
+
+
+
+
+%%
+%% IsIntersectionPointInsideTriangle
+% Given a point which is known to be on the same plane as the triangle
+% determine if the point is 
+% inside (result == 1) or 
+% outside a triangle (result ==0 )
+function result = IsIntersectionPointInsideTriangle(intersectP,triangleVerts)
+
+u = triangleVerts(2,:) - triangleVerts(1,:);
+v = triangleVerts(3,:) - triangleVerts(1,:);
+
+uu = dot(u,u);
+uv = dot(u,v);
+vv = dot(v,v);
+
+w = intersectP - triangleVerts(1,:);
+wu = dot(w,u);
+wv = dot(w,v);
+
+D = uv * uv - uu * vv;
+
+% Get and test parametric coords (s and t)
+s = (uv * wv - vv * wu) / D;
+if (s < 0.0 || s > 1.0)        % intersectP is outside Triangle
+    result = 0;
+    return;
+end
+
+t = (uv * wu - uu * wv) / D;
+if (t < 0.0 || (s + t) > 1.0)  % intersectP is outside Triangle
+    result = 0;
+    return;
+end
+
+result = 1;                      % intersectP is in Triangle
+end
+
+%% IsCollision
+% This is based upon the output of questions 2.5 and 2.6
+% Given a robot model (robot), and trajectory (i.e. joint state vector) (qMatrix)
+% and triangle obstacles in the environment (faces,vertex,faceNormals)
+function result = IsCollision(robot,qMatrix,faces,vertex,faceNormals,returnOnceFound)
+if nargin < 6
+    returnOnceFound = true;
+end
+result = false;
+
+for qIndex = 1:size(qMatrix,1)
+    % Get the transform of every joint (i.e. start and end of every link)
+    tr = GetLinkPoses(qMatrix(qIndex,:), robot);
+
+    % Go through each link and also each triangle face
+    for i = 1 : size(tr,3)-1    
+        for faceIndex = 1:size(faces,1)
+            vertOnPlane = vertex(faces(faceIndex,1)',:);
+            [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)'); 
+            
+            if check == 1 && IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
+                plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
+                display('Intersection');
+                result = true;
+                if returnOnceFound
+                    return
+                end
+            end
+        end    
+    end
+end
+end
+
+%% GetLinkPoses
+% q - robot joint angles
+% robot -  seriallink robot model
+% transforms - list of transforms
+function [ transforms ] = GetLinkPoses( q, robot)
+
+links = robot.model.links;
+transforms = zeros(4, 4, length(links) + 1);
+transforms(:,:,1) = robot.base;
+
+for i = 1:length(links)
+    L = links(1,i);
+    
+    current_transform = transforms(:,:, i);
+    
+    current_transform = current_transform * trotz(q(1,i) + L.offset) * ...
+    transl(0,0, L.d) * transl(L.a,0,0) * trotx(L.alpha);
+
+    transforms(:,:,i + 1) = current_transform;
+end
+end
+
+%% FineInterpolation
+% Use results from Q2.6 to keep calling jtraj until all step sizes are
+% smaller than a given max steps size
+function qMatrix = FineInterpolation(q1,q2,maxStepRadians)
+if nargin < 3
+    maxStepRadians = deg2rad(1);
+end
+    
+steps = 2;
+while ~isempty(find(maxStepRadians < abs(diff(jtraj(q1,q2,steps))),1))
+    steps = steps + 1;
+end
+qMatrix = jtraj(q1,q2,steps);
+end
+
+%% InterpolateWaypointRadians
+% Given a set of waypoints, finely intepolate them
+function qMatrix = InterpolateWaypointRadians(waypointRadians,maxStepRadians)
+if nargin < 2
+    maxStepRadians = deg2rad(1);
+end
+
+qMatrix = [];
+for i = 1: size(waypointRadians,1)-1
+    qMatrix = [qMatrix ; FineInterpolation(waypointRadians(i,:),waypointRadians(i+1,:),maxStepRadians)]; %#ok<AGROW>
+end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

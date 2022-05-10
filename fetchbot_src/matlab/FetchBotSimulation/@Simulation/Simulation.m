@@ -35,7 +35,7 @@ classdef Simulation < handle % Passes by reference
         objectCarteason;
 
         JointController
-
+        
        
 
     end
@@ -220,7 +220,7 @@ classdef Simulation < handle % Passes by reference
             
         end
 
-        function AddWayPoint(obj, robot, waypoint)
+        function addWayPoint(obj, robot, waypoint)
 
             qCurrent = robot.model.getpos; 
             qObject = waypoint;
@@ -256,6 +256,10 @@ classdef Simulation < handle % Passes by reference
                 disp('No intersection');
                 result
             end
+        end
+
+        function grip(obj, position)
+            obj.JointController.grip(position);
         end
 
        

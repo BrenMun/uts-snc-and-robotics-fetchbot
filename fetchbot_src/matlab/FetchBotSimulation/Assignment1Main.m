@@ -41,19 +41,23 @@ waypoint = [0    0.8219   -0.8139   -3.3648   -1.1505   -1.7399   -2.0217 2.6003
 simulation.AddWayPoint(simulation.robotFetch, waypoint);
 %% Testing Collision detection
 waypoint = [0 0 0 0 0 0 0 0];
-simulation.AddWayPoint(simulation.robotFetch, waypoint);
+simulation.addWayPoint(simulation.robotFetch, waypoint);
 pause(5);
 waypoint = [0 0 0 0 0.5 0 0 0];
-simulation.AddWayPoint(simulation.robotFetch, waypoint);
+simulation.addWayPoint(simulation.robotFetch, waypoint);
 pause(5);
 waypoint = [0 0 0 0 -0.66 0 0 0];
-simulation.AddWayPoint(simulation.robotFetch, waypoint);
+simulation.addWayPoint(simulation.robotFetch, waypoint);
 
 %% check current pos for collisions with table
 simulation.checkCollisions(simulation.robotFetch);
 
 %% simulation reset
 simulation.resetRobot(simulation.robotFetch);
+
+%% testing grip
+simulation.grip(1.0);
+
 %% Recycle Object
 
 while (taskCompleted == false && eStop == false)
