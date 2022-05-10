@@ -65,7 +65,10 @@ classdef JointController
         end
 
         function grip(obj)
-            
+            gripperCommand = rosmessage('control_msgs/GripperCommand');
+            gripperCommand.Position = 0.0;  
+            gripGoal.Command = gripperCommand;
+            sendGoalAndWait(gripAct,gripGoal);
         end
     end
 end
