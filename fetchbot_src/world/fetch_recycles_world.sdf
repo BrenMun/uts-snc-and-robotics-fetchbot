@@ -24,10 +24,5 @@
       <uri>model://e_stop</uri>
       <pose>1.45 0.35 0.69 0 0 1.57079</pose>
     </include>
-    <include>
-      <uri>model://fence/meshes/fence.stl</uri>
-	<name>fence</name>
-      <pose>2.0 2.0 0.0 0 0 1.57079</pose>
-    </include>
   </world>
 </sdf>
