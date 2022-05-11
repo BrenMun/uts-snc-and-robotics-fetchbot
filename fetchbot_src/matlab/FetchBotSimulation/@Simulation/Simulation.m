@@ -1,36 +1,36 @@
 classdef Simulation < handle % Passes by reference
-    %SIMULATION Summary of this class goes here
-    %   Detailed explanation goes here
+    %SIMULATION This class sets up the simulation in Matlab
+    %   This class when constructed sets up the environment in matlab
     
     properties
         % Handle
         simulation
 
         %Objects
-        robotUR3;
-        robotUR5;
+        %robotUR3;
+        %robotUR5;
         robotFetch;
         environment;
         bricks = Brick.empty;
-        brickNum;
+        objectNum;
         workspace;
         binPoint = []; 
         objectLocation;
         headCamera;
 
         % Variables
-        tableTolerance = 0.5;
-        brickWallPoses= zeros(9,3); 
-        brickWallIndex = 1; 
-        ur3Base; 
-        ur5Base;
-        brickX; 
-        brickY; 
-        brickZ;
-        trajSteps = 50; 
-        wallX = [];
-        wallY = [];
-        wallZ = [];
+        %tableTolerance = 0.5;
+        %brickWallPoses= zeros(9,3); 
+        %brickWallIndex = 1; 
+        %ur3Base; 
+        %ur5Base;
+        objectX; 
+        objectY; 
+        objectZ;
+        %trajSteps = 50; 
+        %wallX = [];
+        %wallY = [];
+        %wallZ = [];
         steps; % for interpolation
 
         objectCarteason;
@@ -50,19 +50,19 @@ classdef Simulation < handle % Passes by reference
         MoveToBin = 2; 
 
         % Cases for state machine
-        LocateNextBrick = 0; 
-        PickUpBrick = 1; 
-        PlaceBrick = 2; 
-        ReturnHome = 3; 
-        Uknown = 4; 
+%         LocateNextBrick = 0; 
+%         PickUpBrick = 1; 
+%         PlaceBrick = 2; 
+%         ReturnHome = 3; 
+%         Uknown = 4; 
 
-        % Brick states for State Machine
-        state = 0; 
-        unmoved = 0;
-        targeted = 1; 
-        moving = 3; 
-        moved = 4; 
-        unknown = 5;
+%         % Brick states for State Machine
+%         state = 0; 
+%         unmoved = 0;
+%         targeted = 1; 
+%         moving = 3; 
+%         moved = 4; 
+%         unknown = 5;
 
     end
 
@@ -70,99 +70,49 @@ classdef Simulation < handle % Passes by reference
     methods
         function obj = Simulation(fetchBase, workspace, centerpnt,binPoint, headCamera)
             %SIMULATION Construct an instance of this class
-            %   Detailed explanation goes here
+            % adding variables from main to global variables in simulations
             obj.workspace = workspace; 
             obj.binPoint = binPoint; 
             obj.headCamera = headCamera;
-            %obj.ur3Base = ur3Base; obj.ur5Base = ur5Base;
-            % Simulate Robots
-            % Adding UR3 robot
-            %obj.robotUR3 = UR3(ur3Base);
 
-            % Adding UR5 robot
-            %obj.robotUR5 = LinearUR5e(ur5Base);
-
-            % Adding robotFetch
+            % Adding robotFetch as object
             obj.robotFetch = FetchRobot(fetchBase,obj.workspace);
                   
-            % Add Table, Cones, Walls
+            % Setting up the environment
             obj.environment = EnvironmentSetUp(obj.workspace, 2.25, centerpnt);
             axis equal;
 
-%             side = 1;
-%             plotOptions.plotFaces = true;
-%             [vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
-%             axis equal
-%             camlight
-%             obj.tableFaces = faces;
-%             obj.tableVertices = vertex; 
-%             obj.tableFaceNormals = faceNormals; 
-
             % Adding class for sending messages to ROS
             obj.JointController = JointController;
-            % Adding bricks
-%             for i = 1:1:brickNum
-%                 obj.bricks(i) = Brick(obj.brickX(i),obj.brickY(i),obj.brickZ(i),0); % must fix up adding poses
-%                 %obj.bricks(i).brickWallIndex = i; 
-%             end
+
+            view(3);
+
         end
         
-        function teaching(obj)
+        function teaching(obj) % simple function that calls teach
             obj.robotFetch.teaching();
         end
 
-        function addObject(obj, brickNum, object)
+        function addObject(obj, objectNum, object) % This function adds the object to the environment, getting its coordinates from ROS
             brickX = object.X;
             brickY = object.Y;
             brickZ = object.Z;
-            obj.brickX = brickX; obj.brickY = brickY; obj.brickZ = brickZ;
-            obj.brickNum = brickNum;
+            obj.objectX = brickX; obj.objectY = brickY; obj.objectZ = brickZ;
+            obj.objectNum = objectNum;
 
-            for i = 1:1:brickNum
-                obj.bricks(i) = Brick(obj.brickX(i),obj.brickY(i),obj.brickZ(i),0); % must fix up adding poses
+            for i = 1:1:objectNum
+                obj.bricks(i) = Brick(obj.objectX(i),obj.objectY(i),obj.objectZ(i),0); % must fix up adding poses
                 %obj.bricks(i).brickWallIndex = i; 
             end
 
         end
 
-        function DetermineWallLocation(obj) % hard Coded
-
-            brickWidth  = 0.275;
-            brickLength = 0.1335;
-            brickHeight = 0.0735; 
-
-            X1 = 0 - brickWidth;
-            X2 = X1 + brickWidth;
-            X3 = X2 + brickWidth;
-            Y = 0*brickLength; % 0
-            Z1 = 0.04;
-            Z2 = 0.04 + brickHeight;
-            Z3 = 0.04 + brickHeight*2;
-    
-            Poses1 = [X1, Y, Z1];
-            Poses2 = [X2, Y, Z1];
-            Poses3 = [X3, Y, Z1];
-            Poses4 = [X1, Y, Z2];
-            Poses5 = [X2, Y, Z2];
-            Poses6 = [X3, Y, Z2];
-            Poses7 = [X1, Y, Z3];
-            Poses8 = [X2, Y, Z3];
-            Poses9 = [X3, Y, Z3];
-    
-            brickWallPoses = [Poses1; Poses2; Poses3;
-                              Poses4; Poses5; Poses6;
-                              Poses7; Poses8; Poses9];
-            obj.brickWallPoses = brickWallPoses; 
-               
-        end
-
-        function getPos(obj)
+        function getPos(obj) % simple function to get pos in main
             q = obj.robotFetch.model.getpos;
             disp(q); 
         end
 
-        
-        function checkCollisions(obj, robot)
+        function checkCollisions(obj, robot) % simple function to check collisions from main
             q = obj.robotFetch.model.getpos;
             result = IsCollision(robot,q,obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
             if result == 1
@@ -176,11 +126,11 @@ classdef Simulation < handle % Passes by reference
             end
         end
 
-        function grip(obj, position)
+        function grip(obj, position) % this function sends a message to ros to graps 
             obj.JointController.grip(position);
         end
 
-        function moveThroughWaypoints(obj)
+        function moveThroughWaypoints(obj) % This function contains some way points to avoid the table
             %waypoint = [0    0.9346    0.0972    0.1257   -2.0000   -0.1258   -0.5700    0.0012];
             %obj.addWayPoint(obj.robotFetch, waypoint);
             %pause(2);
@@ -197,7 +147,7 @@ classdef Simulation < handle % Passes by reference
 
         end
 
-        function MoveArm(obj, robot, qEnd)
+        function MoveArm(obj, robot, qEnd) % function connects to ros and moves the arm based on matlab movements
 
             %  Go through until there are no step sizes larger than 1 degree using diff(rad2deg(jtraj(q1,q2,steps))
             qCurrent = robot.model.getpos;
@@ -205,13 +155,10 @@ classdef Simulation < handle % Passes by reference
             qWaypoints = [qCurrent, q2];
             qMatrix = obj.FineInterpolation(qCurrent, q2, 0.5);
             %qMatrix = obj.InterpolateWaypointRadians(qWaypoints,deg2rad(5));
-
             robot.steps = 1;
 
             result = true(obj.steps,1); % create logical vecter for results
-        
-            %if robot.steps <= obj.trajSteps
-                %for i = 1:1:obj.trajSteps
+
                 for i = 1: obj.steps
                
                     result(i) = IsCollision(robot,qMatrix(i,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
@@ -220,22 +167,18 @@ classdef Simulation < handle % Passes by reference
                     drawnow();
                     robot.steps = robot.steps + 1;
                 end 
-                %robot.steps = 1;
                 obj.JointController.SendTraj(qCurrent,q2);
-                %pause(1);
-            %end
 
         end
 
-
-        function Recycle(obj, robot)
+        function Recycle(obj, robot) % case maschine to locate, graps and move an object to the bin
             disp("Starting to Recycle");
             
             %headCamera = RobotTemplateClass(getenv("ROS_IP"));
 
             switch robot.currentState
                 
-                case obj.LocateObject
+                case obj.LocateObject % This case locates the object through the information found in ros. 
                     if (robot.currentState==obj.LocateObject)
                         
                         obj.headCamera.perceptionFcn(obj.headCamera.subPoint.LatestMessage, obj.headCamera.subCloud.LatestMessage);
@@ -251,7 +194,7 @@ classdef Simulation < handle % Passes by reference
 
                     end 
 
-                case obj.MoveToObject
+                case obj.MoveToObject % This case Moves the arm through a series of way points to avoid table, then moves to an offset of the objects location
                     if (robot.currentState==obj.MoveToObject && robot.previousState==obj.LocateObject)
                         disp("Moving to collect object");
 
@@ -267,18 +210,18 @@ classdef Simulation < handle % Passes by reference
                                                 
                         qObject= robot.model.ikcon(poseObject, qCurrent);
 
-                        robot.previousState = obj.MoveToObject;  % why here?
+                        robot.previousState = obj.MoveToObject;  
                         robot.steps = 1;
-
+                        % Moving arm
                         obj.MoveArm(robot, qObject)
-
+                        % Setting states
                         robot.currentState = obj.MoveToBin;
                         robot.steps = 1;
                     
                         
                     end
 
-                case obj.MoveToBin
+                case obj.MoveToBin  % This case waits for the VS - RMRC grasping function to confirm it has grabbed the object, then moves through way points to the bin to deliver the package
                     if (robot.currentState==obj.MoveToBin && robot.previousState==obj.MoveToObject)
     
                         % Wait until message the object has been grasped
@@ -294,21 +237,30 @@ classdef Simulation < handle % Passes by reference
                            disp("Dropping Object");
                            obj.grip(1.0);
                         % scan for another object?
+                        robot.previousState = obj.MoveToBin;
 
                         
                     end
                     robot.taskcompleted = true;
                     disp("Object Recycled - Returning Home");
+                    robot.currentState = obj.LocateObject;
+
+                    % Resets the robot to home
                     qHome = robot.qHome;
                     obj.MoveArm(robot, qHome);
+                    pause(5); 
+                    disp("Task Completed");
 
             end
 
         end
-%%
+
+
+
+
+%% Decalring functions
 %% FineInterpolation
-% Use results from Q2.6 to keep calling jtraj until all step sizes are
-% smaller than a given max steps size
+% Calss jtraj until all step sizes aresmaller than a given max steps size
 function qMatrix = FineInterpolation(obj,q1,q2,maxStepRadians)
 if nargin < 3
     maxStepRadians = deg2rad(1);
@@ -336,7 +288,6 @@ for i = 1: size(waypointRadians,1)-1
     qMatrix = [qMatrix ; obj.FineInterpolation(waypointRadians(i,:),waypointRadians(i+1,:),maxStepRadians)]; %#ok<AGROW>
 end
 end
-
 
 %%        
     end

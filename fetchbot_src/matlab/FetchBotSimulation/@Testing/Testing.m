@@ -1,3 +1,6 @@
+%%
+% This script is for quick testing and fiddling. 
+
 %% Working out UR3 Max Reach
 clf 
 clc 

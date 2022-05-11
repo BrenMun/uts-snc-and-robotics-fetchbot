@@ -38,7 +38,7 @@ simulation.getPos()
 qObject = [0    0.8219   -0.0780   -0.8516   -1.2403    1.0248   -1.4547    2.6003];
 simulation.MoveArm(simulation.robotFetch, qObject);
 %% Move to bin
-qObject =[0.0640    1.3200   -0.1495   -0.1256   -0.8292   -0.1258    0.8263    0.0012]
+qObject =[0.0640    1.3200   -0.1495   -0.1256   -0.8292   -0.1258    0.8263    0.0012];
 simulation.MoveArm(simulation.robotFetch, qObject);
 %% check current pos for collisions with table
 simulation.checkCollisions(simulation.robotFetch);
