@@ -4,7 +4,7 @@ clf; clc; clear all;
 
 % Variables
 taskCompleted = false; %Boolean for task completed 
-workspace = [-0.2 1.7 -1 1 0.2 1.5]; % workspace for matlab simulation
+workspace = [-0.2 1.7 -1.2 1.2 0.2 1.5]; % workspace for matlab simulation
 centerpnt = [1,0,0.25];  % Centre point for table proxy in matlab
 binPoint = [-0.2,0.5,0]; % bin centre point 
 

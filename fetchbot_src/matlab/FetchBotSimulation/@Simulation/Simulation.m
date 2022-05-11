@@ -17,6 +17,7 @@ classdef Simulation < handle % Passes by reference
         binPoint = []; 
         objectLocation;
         headCamera;
+        trash_bin;
 
         % Variables
         tableTolerance = 0.5;
@@ -88,6 +89,8 @@ classdef Simulation < handle % Passes by reference
             % Add Table, Cones, Walls
             obj.environment = EnvironmentSetUp(obj.workspace, 2.25, centerpnt);
             axis equal;
+
+            obj.trash_bin = Trash_bin(0.0,0.20,-1.1); %YZ AXIS FLIPPED,(X = 0, Y = -1.1, Z = 0.2)
 
 %             side = 1;
 %             plotOptions.plotFaces = true;
