@@ -104,6 +104,13 @@ x = zeros(3,3)
 
 x(:,1)
 
+%%
+% Add starting Poses for Fetch Robot
+k = transl(0,0,0.7) 
+
+l = transl(0,0,0.7) *trotz(pi)
+
+
 
 %% Fetch Robot
 clf 
@@ -562,9 +569,6 @@ for i = 1: size(waypointRadians,1)-1
     qMatrix = [qMatrix ; FineInterpolation(waypointRadians(i,:),waypointRadians(i+1,:),maxStepRadians)]; %#ok<AGROW>
 end
 end
-
-
-
 
 
 
