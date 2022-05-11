@@ -18,7 +18,7 @@
         <geometry>
           <mesh>
             <uri>model://fence/meshes/fence.stl</uri>
-	 
+   	    <scale> 0.01 0.01 0.01 </scale>	 
           </mesh>
         </geometry>
       </collision>
