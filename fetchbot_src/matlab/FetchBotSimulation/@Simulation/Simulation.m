@@ -294,7 +294,7 @@ classdef Simulation < handle % Passes by reference
 
             robot.steps = 1;
 
-            result = true(obj.steps,1);
+            result = true(obj.steps,1); % create logical vecter for results
         
             %if robot.steps <= obj.trajSteps
                 %for i = 1:1:obj.trajSteps
@@ -424,9 +424,9 @@ while ~isempty(find(maxStepRadians < abs(diff(jtraj(q1,q2,steps))),1))
     steps = steps + 1;
 end
 qMatrix = jtraj(q1,q2,steps);
-disp("Step count")
+%disp("Step count");
 obj.steps = steps;
-steps
+steps;
 end
 
 %% InterpolateWaypointRadians

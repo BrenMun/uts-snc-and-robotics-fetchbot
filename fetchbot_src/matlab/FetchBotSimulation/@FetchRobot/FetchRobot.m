@@ -113,6 +113,7 @@ function GetFetchRobotRobot(self)
     L(3).offset = -pi/2;
     %L(5).offset = -pi/2; % commented out due to gazebo values being to
     %differnt or taking into account offset. 
+
     
     %fetchBot = SerialLink([L(1) L(2) L(3) L(4) L(5) L(6) L(7) L(8)]);
     %fetchBot.base = transl(0,0,0);
@@ -126,7 +127,8 @@ function GetFetchRobotRobot(self)
     % FetchRobot DH parameters found at: 
     % https://www.universal-robots.com/articles/ur/application-installation/dh-parameters-for-calculations-of-kinematics-and-dynamics/
     
-    self.model = SerialLink([L(1) L(2) L(3) L(4) L(5) L(6) L(7) L(8)],'name',name);
+    self.model = SerialLink([L(1) L(2) L(3) L(4) L(5) L(6) L(7) L(8)],'name','FetchRobot');
+    self.model.base = self.base; 
 end
 
 %% teaching
