@@ -1,6 +1,11 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
   <model name="e_stop">
+
+  <material name="WHITE_MTL">
+    <color rgba="0.0 1.0 0.0 1.0"/> <!-- rviz green color -->
+  </material>
+
     <link name="link">
       <inertial>
         <mass>15</mass>
@@ -22,7 +27,8 @@
           </mesh>
         </geometry>
       </collision>
-      <visual name="visual">
+      <!--visual name="visual"-->
+	<visual>
         <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
@@ -30,6 +36,12 @@
    	    <scale> 1.0 1.0 1.0 </scale>
           </mesh>
         </geometry>
+         <material>
+            <!--script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Yellow</name>
+            </script-->
+          </material>
       </visual>
     </link>
     <static>1</static>

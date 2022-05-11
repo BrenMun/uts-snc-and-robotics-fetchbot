@@ -15,7 +15,7 @@
     <arg name="use_sim_time" value="true"/>
     <arg name="headless" value="false"/>
     <!--arg name="world_name" value="$(find fetch_gazebo)/worlds/simple_pick_place.sdf"/-->
-    <arg name="world_name" value="$(find fetch_src)/world/fetch_recycles_world.sdf"/>
+    <arg name="world_name" value="$(find fetchbot)/world/fetch_recycles_world.sdf"/>
   </include>
 
   <!-- Oh, you wanted a robot? -->

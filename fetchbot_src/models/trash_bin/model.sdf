@@ -17,7 +17,7 @@
         <pose>-0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://trash_bin/meshes/big_bin.stl</uri>
+            <uri>model://trash_bin/meshes/short_bin.stl</uri>
 	 
           </mesh>
         </geometry>
@@ -26,7 +26,7 @@
         <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://trash_bin/meshes/big_bin.stl</uri>
+            <uri>model://trash_bin/meshes/short_bin.stl</uri>
    	    <scale> 1.0 1.0 1.0 </scale>
           </mesh>
         </geometry>
