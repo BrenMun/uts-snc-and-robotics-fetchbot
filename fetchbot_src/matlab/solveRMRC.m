@@ -1,11 +1,13 @@
 % RMRC based on robotics lab 9 
 function [qMatrix, posError, angleError] = solveRMRC(robot, point1, point2, q0, totalTime, deltaT)
-    %% set up variables
+    %% set up parameters
     numJoints = length(q0);                                                 % Number of joints
     t = totalTime;                                                          % Total time
     steps = t/deltaT;                                                       % Number of steps based on time
     epsilon = 0.1;                                                          % Manipulability threshold value
     W = eye(numJoints);                                                     % Weighting matrix for velocity vector
+    
+    %% allocate array data
     m = zeros(steps,1);                                                     % measure of manipulability
     qMatrix = zeros(steps, numJoints);                                      % joint angles
     qdot = zeros(steps, numJoints);                                         % joint velocities
@@ -20,9 +22,9 @@ function [qMatrix, posError, angleError] = solveRMRC(robot, point1, point2, q0, 
     x2 = point2(1); y2 = point2(2); z2 = point2(3) + distZ;                 % xyz of point2
 
     for i=1:steps
-        pointTraj(1,i) = (1-s(i))*x0 + s(i)*x1;                             % points in x
-        pointTraj(2,i) = (1-s(i))*y0 + s(i)*y1;                             % points in y
-        pointTraj(3,i) = (1-s(i))*z0 + s(i)*z1;                             % points in z
+        pointTraj(1,i) = (1-s(i))*x1 + s(i)*x2;                             % points in x
+        pointTraj(2,i) = (1-s(i))*y1 + s(i)*y2;                             % points in y
+        pointTraj(3,i) = (1-s(i))*z1 + s(i)*z2;                             % points in z
     end    
     
     T = transl(pointTraj(1,1), pointTraj(2,1), pointTraj(3,1)) * trotx(pi); % transformation matrix with z pointing down
@@ -44,20 +46,20 @@ function [qMatrix, posError, angleError] = solveRMRC(robot, point1, point2, q0, 
         J = robot.jacob0(qMatrix(i,:));                                     % jacobian at current joint state
         m(i) = sqrt(det(J*J'));                                             % calculate manipulability
 
-        % set gain if measurability is less than threshold
+        % set gain if manipulability is less than threshold
         if m(i) < epsilon
-            lambda = (1 - m(i)/epsilon)*5E-2;
+            lambda = (1 - m(i)/epsilon)*5E-2;                               % insufficient manipulability, damping needed
         else
-            lambda = 0;
+            lambda = 0;                                                     % sufficient manipulability, no damping needed
         end
         
         invJ = inv(J'*J + lambda * eye(numJoints)) * J';                    % damped least squares inverse
         qdot(i,:) = (invJ*endEffectorVel)';                                 % solve RMRC equation
         
         for j=1:numJoints
-            if qMatrix(i,j) + deltaT*qdot(i,j) < p560.qlim(j,1)             % If next joint angle is lower than joint limit
+            if qMatrix(i,j) + deltaT*qdot(i,j) < robot.qlim(j,1)             % If next joint angle is lower than joint limit
                 qdot(i,j) = 0;                                              %   Stop the motor
-            elseif qMatrix(i,j) + deltaT*qdot(i,j) > p560.qlim(j,2)         % If next joint angle is greater than joint limit ...
+            elseif qMatrix(i,j) + deltaT*qdot(i,j) > robot.qlim(j,2)         % If next joint angle is greater than joint limit ...
                 qdot(i,j) = 0;                                              %   Stop the motor
             end   
         end
