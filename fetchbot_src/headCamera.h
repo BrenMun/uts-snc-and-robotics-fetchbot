@@ -35,7 +35,7 @@ class HeadCamera
     message_filters::Subscriber<PointCloud2> sub_depth_;    //sub msg for point cloud
     ros::Publisher pubPoint_;                               //publisher for target point
     boost::shared_ptr<Sync> sync_;                          //shared ptr for sync
-    hsv::HSVRange targetHSVRange_;                           //HSV range of target object
+    hsv::HSVRange objHSV_;                                  //HSV range of target object
     public:
     HeadCamera();
     void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth);
