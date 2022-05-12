@@ -60,6 +60,11 @@ Run the gazebo environment with the launch file created in this repo. It uses "s
 cd catkin_ws
 roslaunch fetchbot setupFetchSim.launch
 ```
+Run perception node for subscribing to image and point cloud msgs then publishing the target position.
+
+```
+rosrun fetchbot perception
+```
 
 Run RVIZ to visualise sensing data:
 
