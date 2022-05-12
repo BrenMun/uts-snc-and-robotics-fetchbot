@@ -1,6 +1,7 @@
 classdef EnvironmentSetUp < handle
-    %ENVSETUP Summary of this class goes here
-    %   Detailed explanation goes here
+    %ENVSETUP Sets up the environemnt for matlab
+    %   This class creates objects of classes that make up the environment
+    %   of the matlab simulation
     
     properties
     model; 

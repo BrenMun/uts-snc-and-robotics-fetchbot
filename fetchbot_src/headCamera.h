@@ -26,14 +26,16 @@ namespace hsv{
 class HeadCamera
 {
     private:
-    ros::NodeHandle nh_;
-    message_filters::Subscriber<Image> sub_rgb_;
-    message_filters::Subscriber<PointCloud2> sub_depth_;
-    ros::Publisher pubPoint_;
+    //define message filter type
     typedef message_filters::sync_policies::ApproximateTime<Image, PointCloud2> MySyncPolicy;
     typedef message_filters::Synchronizer<MySyncPolicy> Sync;
-    boost::shared_ptr<Sync> sync_;
-
+    
+    ros::NodeHandle nh_;                                    //node handle
+    message_filters::Subscriber<Image> sub_rgb_;            //sub msg for rgb image
+    message_filters::Subscriber<PointCloud2> sub_depth_;    //sub msg for point cloud
+    ros::Publisher pubPoint_;                               //publisher for target point
+    boost::shared_ptr<Sync> sync_;                          //shared ptr for sync
+    hsv::HSVRange objHSV_;                                  //HSV range of target object
     public:
     HeadCamera();
     void callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth);

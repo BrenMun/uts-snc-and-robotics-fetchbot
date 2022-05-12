@@ -1,3 +1,6 @@
+%%
+% This script is for quick testing and fiddling. 
+
 %% Working out UR3 Max Reach
 clf 
 clc 
@@ -103,6 +106,13 @@ UR5.teach
 x = zeros(3,3)
 
 x(:,1)
+
+%%
+% Add starting Poses for Fetch Robot
+k = transl(0,0,0.7) 
+
+l = transl(0,0,0.7) *trotz(pi)
+
 
 
 %% Fetch Robot
@@ -263,14 +273,49 @@ clear
 % https://www.youtube.com/watch?v=tce28zET9kI&ab_channel=mewgen
 
 % 2.1) Create a 3 link planar robot with all 3 links having a = 1m, leave the base at eye(4).
-fetchBase = transl(0.5,-1,0) *trotz(pi);
-workspace = [-1 3 -1 1 -0.5 1.5];
-L1 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi]);
-L2 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi]);
-L3 = Link('d',0,'a',1,'alpha',0,'qlim',[-pi pi]);       
-%robot = SerialLink([L1 L2 L3],'name','myRobot');    
-robotFet = FetchRobot(fetchBase,workspace);
-robot = robotFet.model;
+%fetchBase = transl(0.5,-1,0) *trotz(pi);
+workspace = [-1 3 -1.5 1.5 -1.5 1.5];
+ L0 = 0.110;  % x
+    D1 = 0.0;  % 
+    L1 = 0.1197;  % 
+    
+    L2 = 0.1163;  % Shoulder pan joint
+    L3 = 0.17181;  % Shoulder lift joint
+    L4 = 0.18093;  % Upper arm roll joint
+    L5 = 0.1658;  % elbow flex joint
+    L6 = 0.15675;  % forarm roll joint
+    L7 = 0.1166;  % wrist flex joint
+    L8 = 0.04224;  % wrist roll joint
+    L9 = 0.12193;  % gripper joint
+
+    L(1) = Link([pi     L1+D1   L0         0      1]); % PRISMATIC Link shulder pan
+    L(2) = Link([0      L3      L2        -pi/2   0]); % SHoulder lift
+    L(3) = Link([0      0       0         -pi/2   0]); % upper arm rol joint
+    L(4) = Link([0      L4+L5   0          pi/2   0]);
+    L(5) = Link([0      0       0         -pi/2   0]);
+    L(6) = Link([0      L6+L7   0          pi/2	  0]);
+    L(7) = Link([0      0       0         -pi/2   0]);
+    L(8) = Link([0      L8+L9   0          0      0]);
+    %            ?      d       x          Alpa   type
+    
+    % Incorporate joint limits
+    L(1).qlim = [0 0.400];
+    L(2).qlim = [-23/45*pi, 23/45*pi];
+    L(3).qlim = [-7/18*pi, 29/60*pi];
+    L(4).qlim = [-360 360]*pi/180; %continuous not sure how to do that
+    L(5).qlim = [-43/60*pi, 43/60*pi];
+    L(6).qlim = [-360 360]*pi/180; %continuous
+    L(7).qlim = [-25/36*pi, 25/36*pi ];
+    L(8).qlim = [-360 360]*pi/180; %continuous
+
+    L(3).offset = -pi/2;
+
+
+robot = SerialLink([L(1) L(2) L(3) L(4) L(5) L(6) L(7) L(8)],'name','myRobot');    
+robot.base = transl(1,-1,0) *trotz(pi);
+
+%robotFet = FetchRobot(fetchBase,workspace);
+%robot = robotFet.model;
 q = zeros(1,8);                                                     % Create a vector of initial joint angles        
 scale = 0.5;
 %workspace = [-2 2 -2 2 -0.05 2];                                       % Set the size of the workspace when drawing the robot
@@ -281,20 +326,51 @@ robot.plot(q,'workspace',workspace,'scale',scale);                  % Plot the r
 % 2.3) Use teach and note when the links of the robot can collide with 4 of the planes:
 
 centerpnt = [2,0,-0.5];
+%centerpnt = [0,-1.7,-0.5];
 side = 1.5;
 plotOptions.plotFaces = true;
+plotOptions.plotVerts = true;
+plotOptions.plotEdges = true;
+
 [vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
 axis equal
 camlight
 
+
+
 % Get the transform of every joint (i.e. start and end of every link)
 L = robot.links(end-6:end); % gets robot links
 tr = zeros(4,4,length(L)+1); % initialised transfor as 4 by 4, and number of joints plus one
+
+%tr(:,:,1) = robot.base*trotz(pi); %%%%%%% do i need to rotate again???
 tr(:,:,1) = robot.base;
+points = [];
+xypoint=[];
+xyzpoint=[];
 
 for i = 1 : length(L)
-    tr(:,:,i+1) = tr(:,:,i) * trotz(q(i)+L(i).offset) * transl(0,0,L(i).d) * transl(L(i).a,0,0) * trotx(L(i).alpha);
+    tr(:,:,i+1) = tr(:,:,i)*trotz(pi) * trotz(q(i)+L(i).offset) * transl(0,0,L(i).d) * transl(L(i).a,0,0) * trotx(L(i).alpha);
+
+    hold on
+    plot3(tr(1,4,i),tr(2,4,i),tr(3,4,i));
+    axis equal
+    view(3)
+    points = [points, tr(1,4,i)];% tr(2,4,i) tr(3,4,i)];
+    xypoint = [xypoint,tr(2,4,i)];
+    xyzpoint =[xyzpoint,tr(3,4,i)];
 end
+points
+xypoint
+xyzpoint
+%plot(xypoint);
+plot3(points,xypoint,xyzpoint);
+
+% hold on
+% for i = 1:length(points)
+%     hold on
+%     plot3(i, i+1, i+2); 
+%     axis equal
+% end
 
 % 2.5: Go through each link and also each triangle face
 for i = 1 : size(tr,3)-1    
@@ -319,6 +395,8 @@ while ~isempty(find(1 < abs(diff(rad2deg(jtraj(q1,q2,steps)))),1))
     steps = steps + 1;
 end % this while loop, loops until it finds enough steps less and 1 degree
 qMatrix = jtraj(q1,q2,steps);
+disp("Steps ")
+steps
 %
 
 % 2.7)Check each of the joint states in the trajectory to work out which 
@@ -327,9 +405,10 @@ qMatrix = jtraj(q1,q2,steps);
 % You may like to use this structure.
 result = true(steps,1);
 for i = 1: steps
-    result(i) = IsCollision(robotFet,qMatrix(i,:),faces,vertex,faceNormals,false);
+    result(i) = IsCollision(robot,qMatrix(i,:),faces,vertex,faceNormals,false);
     robot.animate(qMatrix(i,:));
 end
+
 % This finds the joint states that are in collision
 % inside is collision, 
 
@@ -425,7 +504,7 @@ for qIndex = 1:size(qMatrix,1)
         for faceIndex = 1:size(faces,1)
             vertOnPlane = vertex(faces(faceIndex,1)',:);
             [intersectP,check] = LinePlaneIntersection(faceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)');
-            intersectP
+            intersectP;
             if check == 1 && IsIntersectionPointInsideTriangle(intersectP,vertex(faces(faceIndex,:)',:))
                 plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
                 display('Intersection');
@@ -450,7 +529,7 @@ end
 % transforms - list of transforms
 function [ transforms ] = GetLinkPoses( q, robot)
 
-links = robot.model.links(end-6:end);
+links = robot.links(end-6:end);
 transforms = zeros(4, 4, length(links) + 1);
 transforms(:,:,1) = robot.base;
 
@@ -493,9 +572,6 @@ for i = 1: size(waypointRadians,1)-1
     qMatrix = [qMatrix ; FineInterpolation(waypointRadians(i,:),waypointRadians(i+1,:),maxStepRadians)]; %#ok<AGROW>
 end
 end
-
-
-
 
 
 
