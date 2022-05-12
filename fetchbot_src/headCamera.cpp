@@ -7,12 +7,13 @@ HeadCamera::HeadCamera(){
   sync_.reset(new Sync(MySyncPolicy(10), sub_rgb_, sub_depth_));
   sync_->registerCallback(boost::bind(&HeadCamera::callback, this, _1, _2));
   pubPoint_ = nh_.advertise<geometry_msgs::PointStamped> ("target_point", 1);
+  objHSV_ = {{28,0,107},{256,256,256}};
 }
 
 void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPtr& msg_depth){
   cv_bridge::CvImagePtr cv_ptr;
   cv::Mat image, hsv, mask;
-  pcl::PointCloud<pcl::PointXYZ> depth;    
+  pcl::PointCloud<pcl::PointXYZ> depth;
   try{
     //convert msg to a CV image
     cv_ptr = cv_bridge::toCvCopy(*msg_rgb, sensor_msgs::image_encodings::TYPE_8UC3);
@@ -21,7 +22,12 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
     //convert to hsv
     cv::cvtColor(image, hsv, CV_BGR2HSV);
     //filter out hsv of object
-    cv::inRange(hsv, cv::Scalar(28,0,107), cv::Scalar(256,256,256), mask);
+    cv::inRange(
+      hsv, 
+      cv::Scalar(objHSV_.min.h, objHSV_.min.s, objHSV_.min.v), //min hsv
+      cv::Scalar(objHSV_.max.h, objHSV_.max.s, objHSV_.max.v), //max hsv
+      mask
+    );
     //find moments of the object
     cv::Moments m = cv::moments(mask, true);
     //find centroid of the object
@@ -32,7 +38,8 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
     //get corresponding 3D point from 2D image position of centroid
     pcl::PointXYZ p = depth.at(c.x, c.y);
     //convert pcl::PointXYZ to geometry_msgs::Point for publishing
-    geometry_msgs::PointStamped target; target.point.x = p.x; target.point.y = p.y; target.point.z = p.z; 
+    geometry_msgs::PointStamped target; 
+    target.point.x = p.x; target.point.y = p.y; target.point.z = p.z; 
     //set the frame of reference for the point
     target.header.frame_id = "head_camera_rgb_optical_frame";
     //set stamp to current time
