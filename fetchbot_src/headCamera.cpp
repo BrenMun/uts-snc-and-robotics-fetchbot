@@ -45,12 +45,7 @@ void HeadCamera::callback(const ImageConstPtr& msg_rgb, const PointCloud2ConstPt
     //set stamp to current time
     target.header.stamp = ros::Time::now();
     //publish geometry_msgs::Point of centroid
-    ros::Rate rate(1);
-    while(ros::ok()){
-      ros::spinOnce();
-      pubPoint_.publish(target);
-      rate.sleep();
-    }
+    pubPoint_.publish(target);
   }
   catch (cv_bridge::Exception& e){
     ROS_ERROR("cv_bridge exception:  %s", e.what());
