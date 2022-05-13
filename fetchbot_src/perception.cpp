@@ -14,9 +14,10 @@ int main(int argc, char **argv)
   // Subscribe to rgb and depth data
   ros::init(argc, argv, "sub2camera");
   ros::Rate rate(1);
-  while(ros::ok()) {
-    ros::spinOnce();
+  // while(ros::ok()) {
+    // ros::spinOnce();
     HeadCamera camera;
-    rate.sleep();
-  }
+    // rate.sleep();
+  // }
+  ros::spin();
 }
