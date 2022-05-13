@@ -26,7 +26,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 # CMake will create your library, add the cpp files needed (file will be "lib<name>.a")
 add_library(fetchbot STATIC 
-  main.cpp 
   robotHead.h
   headCamera.cpp
   hsvTrackbar.h
@@ -35,13 +34,11 @@ add_library(fetchbot STATIC
 )
 
 # CMake will create executable add the cpp files needed
-add_executable(fetchbot_main main.cpp) #run main
 add_executable(move_arm armControl.cpp) #arm control using moveit
 add_executable(perception perception.cpp) #live perception node
 add_executable(image_read sample_code/sub2Image.cpp)
 
 # Cmake will link against the libraries in final step
-target_link_libraries(fetchbot_main fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(move_arm fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 target_link_libraries(perception fetchbot ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 target_link_libraries(image_read ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
