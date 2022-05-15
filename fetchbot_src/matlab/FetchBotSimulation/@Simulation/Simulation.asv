@@ -121,13 +121,11 @@ classdef Simulation < handle % Passes by reference
         function getFkine(obj) % simple function to get EE position
             q = obj.robotFetch.model.getpos;
             f=obj.robotFetch.model.fkine(q);
-            %disp(f);
+            disp(f);
 
-            obj.EE_X = f(1, 4);
-            obj.EE_Y = f(2, 4);
-            obj.EE_Z = f(3, 4);
-
-            EndEffectorcoordinates = [f(1, 4),f(2, 4),f(3, 4)]
+            obj.EE_X = f(1:4)
+            obj.EE_Y = f(2:4)
+            obj.EE_Z = f(3:end)
         end
 
         function checkCollisions(obj, robot) % simple function to check collisions from main
@@ -156,25 +154,25 @@ classdef Simulation < handle % Passes by reference
             %pause(2);
             waypoint2 = [0    0.9346    0.0698    1.5080   -0.3339    0.1255   -2.0972    1.2579];
             %obj.addWayPoint(obj.robotFetch, waypoint);
-            obj.MoveArm(waypoint1);
+            obj.MoveArm(obj.robotFetch, waypoint1);
             pause(1);
-            %obj.MoveArm(waypoint2);
+            %obj.MoveArm(obj.robotFetch, waypoint2);
         end
 
-        function MoveArm(obj, qEnd) % function connects to ros and moves the arm based on matlab movements
+        function MoveArm(obj, robot, qEnd) % function connects to ros and moves the arm based on matlab movements
             %  Go through until there are no step sizes larger than 1 degree using diff(rad2deg(jtraj(q1,q2,steps))
-            qCurrent = obj.robotFetch.model.getpos;
+            qCurrent = robot.model.getpos;
             q2 = qEnd;
             %qWaypoints = [qCurrent, q2];
             qMatrix = obj.FineInterpolation(qCurrent, q2, 0.5);
             %qMatrix = obj.InterpolateWaypointRadians(qWaypoints,deg2rad(5));
-            obj.robotFetch.steps = 1;
+            robot.steps = 1;
             result = true(obj.steps,1); % create logical vecter for results
             for i = 1: obj.steps
-                result(i) = IsCollision(obj.robotFetch,qMatrix(i,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
-                %robot.model.animate(qMatrix(i,:));
+                result(i) = IsCollision(robot,qMatrix(i,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
+                robot.model.animate(qMatrix(i,:));
                 drawnow();
-                obj.robotFetch.steps = obj.robotFetch.steps + 1;
+                robot.steps = robot.steps + 1;
             end 
             obj.JointController.SendTraj(qCurrent,q2);
         end
@@ -215,8 +213,8 @@ classdef Simulation < handle % Passes by reference
                         obj.robotFetch.previousState = obj.MoveToObject;             % previous joints
                         obj.robotFetch.steps = 1;                                    % steps
                         qCurrent(1) = qObject(1);                           % change torso q value
-                        obj.MoveArm(qCurrent)                        % Move torso only to avoid collision
-                        obj.MoveArm(qObject)                         % Moving arm
+                        obj.MoveArm(obj.robotFetch, qCurrent)                        % Move torso only to avoid collision
+                        obj.MoveArm(obj.robotFetch, qObject)                         % Moving arm
 
                         %% Pick up object (RMRC)
                         d = 0.21;                                           %desired distance from end-effector to target
@@ -228,14 +226,14 @@ classdef Simulation < handle % Passes by reference
                         [qMatrix, posError, angleError] = ...               %return q to object, position error and angle error for plotting
                         solveRMRC(obj.robotFetch.model,p1,p2,q_guess,totalTime,deltaT,d);  %solve RMRC using parameters above
                         for i = 1:length(qMatrix(:,1))                      %plot trajectory
-                            %obj.robotFetch.model.animate(qMatrix(i,:));
+                            obj.robotFetch.model.animate(qMatrix(i,:));
                             drawnow();
                             obj.robotFetch.steps = obj.robotFetch.steps + 1;
                         end
-                        obj.MoveArm(qMatrix(end,:));                 %move arm to target
+                        obj.MoveArm(obj.robotFetch, qMatrix(end,:));                 %move arm to target
                         obj.grip(0.0);                                      %grasp object
                         prevQ = qMatrix(end,:)
-                        obj.MoveArm([qObject(1) prevQ(2) ...         %lift object
+                        obj.MoveArm(obj.robotFetch, [qObject(1) prevQ(2) ...         %lift object
                             prevQ(3) prevQ(4) prevQ(5) ...
                             prevQ(6) prevQ(7) prevQ(8)]);
                         % Setting states
@@ -255,7 +253,7 @@ classdef Simulation < handle % Passes by reference
                            qCurrent = obj.robotFetch.model.getpos;
                            %qBin =[qCurrent(1)  1.3200   -0.1495   -0.1256   -0.8292   -0.1258    0.8263    0.0012];
                            qBin =[qCurrent(1)   1.4806   -0.0398    0.0000   -0.5591   -0.0001    1.5680    0.0012];
-                           obj.MoveArm(qBin);
+                           obj.MoveArm(obj.robotFetch, qBin);
                            
                         % let go
                            pause(2)
@@ -274,7 +272,7 @@ classdef Simulation < handle % Passes by reference
 
                     % Resets the robot to home
                     qHome = obj.robotFetch.qHome;
-                    obj.MoveArm(qHome);
+                    obj.MoveArm(robot, qHome);
                     pause(5); 
                     disp("Task Completed");
 

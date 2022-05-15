@@ -41,12 +41,12 @@ qObject = [0    1.4806   -0.0398    0.0000   -0.5591   -0.0001    1.5680    0.00
 simulation.MoveArm(qObject);
 %% Move to bin
 qObject =[0.0640    1.3200   -0.1495   -0.1256   -0.8292   -0.1258    0.8263    0.0012];
-simulation.MoveArm(qObject);
+simulation.MoveArm(simulation.robotFetch, qObject);
 %% check current pos for collisions with table
 simulation.checkCollisions(simulation.robotFetch);
 %% simulation reset
 qObject = simulation.robotFetch.qHome;
-simulation.MoveArm(qObject);
+simulation.MoveArm(simulation.robotFetch, qObject);
 %%
 simulation.getFkine();
 %% Recycle Object
