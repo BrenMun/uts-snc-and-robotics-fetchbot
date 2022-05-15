@@ -233,7 +233,8 @@ classdef Simulation < handle % Passes by reference
                         % Move to way points to be above bin
                            disp("Moving Object to Recycling Bin");
                            qCurrent = robot.model.getpos;
-                           qBin =[qCurrent(1)  1.3200   -0.1495   -0.1256   -0.8292   -0.1258    0.8263    0.0012];
+                           %qBin =[qCurrent(1)  1.3200   -0.1495   -0.1256   -0.8292   -0.1258    0.8263    0.0012];
+                           qBin =[qCurrent(1)   1.4806   -0.0398    0.0000   -0.5591   -0.0001    1.5680    0.0012];
                            obj.MoveArm(robot, qBin);
                            
                         % let go
