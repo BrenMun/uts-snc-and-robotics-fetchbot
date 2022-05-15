@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://cafe_table</uri>
+      <name>table1</name>
+      <pose>1.0 0 -0.08 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://demo_cube</uri>
+      <pose>0.6 0.1 0.75 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://trash_bin</uri>
+      <pose>0.0 0.6 -0.4 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://e_stop</uri>
+      <pose>1.45 0.35 0.69 0 0 1.57079</pose>
+    </include>
+    <include>
+      <uri>model://fence</uri>
+      <pose>0 -3.0 0.4 0 0 0 </pose>
+    </include>
+    <include>
+      <uri>model://fence</uri>
+      <pose>0 3.0 0.4 0 0 0 </pose>
+    </include>
+    <include>
+      <uri>model://fence</uri>
+      <pose>3.0 0 0.4 0 0 1.5707 </pose>
+    </include>
+    <include>
+      <uri>model://fence</uri>
+      <pose>-3.0 0 0.4 0 0 1.5707 </pose>
+    </include>
+    <include>
+      <uri>model://fire_exting</uri>
+      <pose>2.9 0.1 0.0 0 0 1.5707 </pose>
+    </include>
+  </world>
+</sdf>
