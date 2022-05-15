@@ -83,7 +83,7 @@ classdef Simulation < handle % Passes by reference
             obj.environment = EnvironmentSetUp(obj.workspace, 2.25, centerpnt);
             axis equal;
 
-<<<<<<< HEAD
+
             obj.trash_bin = Trash_bin(0.0,0.20,-1.1); %YZ AXIS FLIPPED,(X = 0, Y = -1.1, Z = 0.2)
 
 %             side = 1;
@@ -95,8 +95,6 @@ classdef Simulation < handle % Passes by reference
 %             obj.tableVertices = vertex; 
 %             obj.tableFaceNormals = faceNormals; 
 
-=======
->>>>>>> 62d60f65f0cec66aa72fd1fd9e5ca2f1c393e3a2
             % Adding class for sending messages to ROS
             obj.JointController = JointController;
 
