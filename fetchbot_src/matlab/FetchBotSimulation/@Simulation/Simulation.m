@@ -240,8 +240,10 @@ classdef Simulation < handle % Passes by reference
                            obj.MoveArm(robot, qBin);
                            
                         % let go
+                           pause(2)
                            disp("Dropping Object");
                            obj.grip(1.0);
+                           pause(2)
                         % scan for another object?
                         robot.previousState = obj.MoveToBin;
 
