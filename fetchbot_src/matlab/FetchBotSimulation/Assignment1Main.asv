@@ -35,8 +35,8 @@ simulation.teaching;
 %% Get arms current position
 simulation.getPos()
 %% Test movement
-%qObject = [0    0.8219   -0.0780   -0.8516   -1.2403    1.0248   -1.4547    2.6003];
-qObject = [0    0.9346    0.0698    1.5080   -0.3339    0.1255   -2.0972    1.2579];
+qObject = [0    0.8219   -0.0780   -0.8516   -1.2403    1.0248   -1.4547    2.6003];
+waypoint2 = [0    0.9346    0.0698    1.5080   -0.3339    0.1255   -2.0972    1.2579];
 simulation.MoveArm(simulation.robotFetch, qObject);
 %% Move to bin
 qObject =[0.0640    1.3200   -0.1495   -0.1256   -0.8292   -0.1258    0.8263    0.0012];

@@ -1,7 +1,7 @@
 <launch>
   <!--Setup Simple Grasp Environment with simple_grasp.launch-->
-  <include file="$(find fetch_gazebo)/launch/simple_grasp.launch"></include>
-  <!--include file="$(find fetch_gazebo)/launch/fetch_world.launch"></include-->
+  <!--include file="$(find fetch_gazebo)/launch/simple_grasp.launch"></include-->
+  <include file="$(find fetchbot)/launch/fetch_world.launch"></include>
 
 
   <!--Run MoveIt! with move_group.launch-->
