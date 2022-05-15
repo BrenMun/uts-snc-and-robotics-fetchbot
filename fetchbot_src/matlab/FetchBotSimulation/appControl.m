@@ -44,14 +44,14 @@ classdef appControl
             % add object to matlab simulation
             obj.simulation.addObject(1,obj.object);
 
-            currentPos = obj.simulation.robotFetch.model.getpos;
-
-            if currentPos ~= obj.simulation.robotFetch.qHome
-                disp("Resetting Arm");
-                qHome = obj.simulation.robotFetch.qHome;
-                obj.simulation.MoveArm(qHome);
-
-            end
+%             currentPos = obj.simulation.robotFetch.model.getpos;
+% 
+%             if currentPos ~= obj.simulation.robotFetch.qHome
+%                 disp("Resetting Arm");
+%                 qHome = obj.simulation.robotFetch.qHome;
+%                 obj.simulation.MoveArm(qHome);
+% 
+%             end
 
             
 

@@ -163,7 +163,7 @@ classdef Simulation < handle % Passes by reference
 
         function MoveArm(obj, qEnd) % function connects to ros and moves the arm based on matlab movements
             %  Go through until there are no step sizes larger than 1 degree using diff(rad2deg(jtraj(q1,q2,steps))
-            qCurrent = obj.robotFetch.model.getpos;
+            qCurrent = obj.robotFetch.model.getpos();
             q2 = qEnd;
             %qWaypoints = [qCurrent, q2];
             qMatrix = obj.FineInterpolation(qCurrent, q2, 0.5);
@@ -172,7 +172,7 @@ classdef Simulation < handle % Passes by reference
             result = true(obj.steps,1); % create logical vecter for results
             for i = 1: obj.steps
                 result(i) = IsCollision(obj.robotFetch,qMatrix(i,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
-                %robot.model.animate(qMatrix(i,:));
+                obj.robotFetch.model.animate(qMatrix(i,:));
                 drawnow();
                 obj.robotFetch.steps = obj.robotFetch.steps + 1;
             end 
@@ -228,7 +228,7 @@ classdef Simulation < handle % Passes by reference
                         [qMatrix, posError, angleError] = ...               %return q to object, position error and angle error for plotting
                         solveRMRC(obj.robotFetch.model,p1,p2,q_guess,totalTime,deltaT,d);  %solve RMRC using parameters above
                         for i = 1:length(qMatrix(:,1))                      %plot trajectory
-                            %obj.robotFetch.model.animate(qMatrix(i,:));
+                            obj.robotFetch.model.animate(qMatrix(i,:));
                             drawnow();
                             obj.robotFetch.steps = obj.robotFetch.steps + 1;
                         end
