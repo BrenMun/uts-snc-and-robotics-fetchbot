@@ -13,7 +13,7 @@ classdef Simulation < handle % Passes by reference
         robotFetch;
         environment;
         bricks = Brick.empty;% creates empty array
-        cube = CollisionCube.empty;% creates empty array
+
         objectNum;
         workspace;
         binPoint = []; 
@@ -94,28 +94,18 @@ classdef Simulation < handle % Passes by reference
             obj.robotFetch.teaching();
         end
 
-%         function addObject(obj, objectNum, object) % This function adds the object to the environment, getting its coordinates from ROS
-%             brickX = object.X;
-%             brickY = object.Y;
-%             brickZ = object.Z;
-%             obj.objectX = brickX; obj.objectY = brickY; obj.objectZ = brickZ;
-%             obj.objectNum = objectNum;
-%             for i = 1:1:objectNum
-%                 obj.bricks(i) = Brick(obj.objectX(i),obj.objectY(i),obj.objectZ(i),0); % must fix up adding poses
-%                 %obj.bricks(i).brickWallIndex = i; 
-%             end
-%         end
         function addObject(obj, objectNum, object) % This function adds the object to the environment, getting its coordinates from ROS
-            cubeX = object.X;
-            cubeY = object.Y;
-            cubeZ = object.Z;
-            obj.objectX = cubeX; obj.objectY = cubeY; obj.objectZ = cubeZ;
+            brickX = object.X;
+            brickY = object.Y;
+            brickZ = object.Z;
+            obj.objectX = brickX; obj.objectY = brickY; obj.objectZ = brickZ;
             obj.objectNum = objectNum;
             for i = 1:1:objectNum
-                obj.cube(i) = CollisionCube(obj.objectX(i),obj.objectY(i),obj.objectZ(i),0); % must fix up adding poses
+                obj.bricks(i) = Brick(obj.objectX(i),obj.objectY(i),obj.objectZ(i),0); % must fix up adding poses
                 %obj.bricks(i).brickWallIndex = i; 
             end
         end
+
 
         function getPos(obj) % simple function to get pos in main
             q = obj.robotFetch.model.getpos;
