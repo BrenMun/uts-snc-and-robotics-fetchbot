@@ -251,10 +251,11 @@ classdef Simulation < handle % Passes by reference
                            qCurrent = obj.robotFetch.model.getpos;
                            %qBin =[qCurrent(1)  1.3200   -0.1495   -0.1256   -0.8292   -0.1258    0.8263    0.0012];
                            %qBin =[qCurrent(1)   1.4806   -0.0398    0.0000   -0.5591   -0.0001    1.5680    0.0012];
-                           qBin =[qCurrent(1)   1.1240   -0.4682    3.5186   -0.0225   -0.6284   -0.6573   0.15707];
+%                            qBin =[qCurrent(1)   1.1240   -0.4682    3.5186   -0.0225   -0.6284   -0.6573   0.15707];
+                           qBin =[qCurrent(1)    1.4050   -0.9076    3.2533   -1.4137    0.5236    0.3578   -0.5236];
                            obj.MoveArm(qBin);
                            
-                        % let go
+                        % let go1.4050   -0.9076    3.2533   -1.4137    0.5236    0.3578   -0.5236
                            pause(2)
                            disp("Dropping Object");
                            obj.grip(1.0);
@@ -268,6 +269,10 @@ classdef Simulation < handle % Passes by reference
                     app.taskcompleted = true;
                     disp("Object Recycled - Returning Home");
                     obj.robotFetch.currentState = obj.LocateObject;
+                    
+                    %waypoint for home
+                    qHomeReady = [0    1.6057   -0.0942    1.6127   -1.3687    0.6493    0.3578   -0.5236];
+                    obj.MoveArm(qHomeReady);
 
                     % Resets the robot to home
                     qHome = obj.robotFetch.qHome;
