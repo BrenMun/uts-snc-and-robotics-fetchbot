@@ -228,7 +228,7 @@ classdef Simulation < handle % Passes by reference
                         [qMatrix, posError, angleError] = ...               %return q to object, position error and angle error for plotting
                         solveRMRC(obj.robotFetch.model,p1,p2,q_guess,totalTime,deltaT,d);  %solve RMRC using parameters above
                         for i = 1:length(qMatrix(:,1))                      %plot trajectory
-                            obj.robotFetch.model.animate(qMatrix(i,:));
+                            %obj.robotFetch.model.animate(qMatrix(i,:));
                             drawnow();
                             obj.robotFetch.steps = obj.robotFetch.steps + 1;
                         end

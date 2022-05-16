@@ -28,7 +28,7 @@ simulation.addObject(1,object)
 
 %% Recycle Object
 while (taskCompleted == false && eStop == false)
-    simulation.Recycle(simulation.robotFetch);
+    simulation.Recycle();
     if (simulation.robotFetch.taskcompleted == true)
         taskCompleted = true;
         disp("Object Recycled");
