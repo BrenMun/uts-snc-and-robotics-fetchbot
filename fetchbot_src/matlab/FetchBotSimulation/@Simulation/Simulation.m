@@ -12,7 +12,8 @@ classdef Simulation < handle % Passes by reference
         %robotUR5;
         robotFetch;
         environment;
-        bricks = Brick.empty;
+        bricks = Brick.empty;% creates empty array
+        cube = CollisionCube.empty;% creates empty array
         objectNum;
         workspace;
         binPoint = []; 
@@ -83,14 +84,6 @@ classdef Simulation < handle % Passes by reference
             axis equal;
 
             obj.trash_bin = Trash_bin(0.0,0.20,-1.1); %YZ AXIS FLIPPED,(X = 0, Y = -1.1, Z = 0.2)
-%             side = 1;
-%             plotOptions.plotFaces = true;
-%             [vertex,faces,faceNormals] = RectangularPrism(centerpnt-side/2, centerpnt+side/2,plotOptions);
-%             axis equal
-%             camlight
-%             obj.tableFaces = faces;
-%             obj.tableVertices = vertex; 
-%             obj.tableFaceNormals = faceNormals; 
 
             % Adding class for sending messages to ROS
             obj.JointController = JointController;
@@ -101,14 +94,25 @@ classdef Simulation < handle % Passes by reference
             obj.robotFetch.teaching();
         end
 
+%         function addObject(obj, objectNum, object) % This function adds the object to the environment, getting its coordinates from ROS
+%             brickX = object.X;
+%             brickY = object.Y;
+%             brickZ = object.Z;
+%             obj.objectX = brickX; obj.objectY = brickY; obj.objectZ = brickZ;
+%             obj.objectNum = objectNum;
+%             for i = 1:1:objectNum
+%                 obj.bricks(i) = Brick(obj.objectX(i),obj.objectY(i),obj.objectZ(i),0); % must fix up adding poses
+%                 %obj.bricks(i).brickWallIndex = i; 
+%             end
+%         end
         function addObject(obj, objectNum, object) % This function adds the object to the environment, getting its coordinates from ROS
-            brickX = object.X;
-            brickY = object.Y;
-            brickZ = object.Z;
-            obj.objectX = brickX; obj.objectY = brickY; obj.objectZ = brickZ;
+            cubeX = object.X;
+            cubeY = object.Y;
+            cubeZ = object.Z;
+            obj.objectX = cubeX; obj.objectY = cubeY; obj.objectZ = cubeZ;
             obj.objectNum = objectNum;
             for i = 1:1:objectNum
-                obj.bricks(i) = Brick(obj.objectX(i),obj.objectY(i),obj.objectZ(i),0); % must fix up adding poses
+                obj.cube(i) = CollisionCube(obj.objectX(i),obj.objectY(i),obj.objectZ(i),0); % must fix up adding poses
                 %obj.bricks(i).brickWallIndex = i; 
             end
         end
@@ -230,7 +234,7 @@ classdef Simulation < handle % Passes by reference
                         [qMatrix, posError, angleError] = ...               %return q to object, position error and angle error for plotting
                         solveRMRC(obj.robotFetch.model,p1,p2,q_guess,totalTime,deltaT,d);  %solve RMRC using parameters above
                         for i = 1:length(qMatrix(:,1))                      %plot trajectory
-                            obj.robotFetch.model.animate(qMatrix(i,:));
+%                             obj.robotFetch.model.animate(qMatrix(i,:));
                             drawnow();
                             obj.robotFetch.steps = obj.robotFetch.steps + 1;
                         end
@@ -257,7 +261,7 @@ classdef Simulation < handle % Passes by reference
                            qCurrent = obj.robotFetch.model.getpos;
                            %qBin =[qCurrent(1)  1.3200   -0.1495   -0.1256   -0.8292   -0.1258    0.8263    0.0012];
                            %qBin =[qCurrent(1)   1.4806   -0.0398    0.0000   -0.5591   -0.0001    1.5680    0.0012];
-                           qBin =[qCurrent(1)   1.1240   -0.4682    3.5186   -0.0225   -0.6284   -0.6573   -0.1244];
+                           qBin =[qCurrent(1)   1.1240   -0.4682    3.5186   -0.0225   -0.6284   -0.6573   0.15707];
                            obj.MoveArm(qBin);
                            
                         % let go

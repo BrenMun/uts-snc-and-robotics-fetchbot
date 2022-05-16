@@ -10,7 +10,7 @@ classdef CollisionCube < handle
     end
     
     methods
-        function obj = CollisionCube(x, y, z)
+        function obj = CollisionCube(x, y, z,i)
             %TABLE Construct an instance of this class
             %   Detailed explanation goes here
             CollisionCube_h = PlaceObject('cube_one.ply');
