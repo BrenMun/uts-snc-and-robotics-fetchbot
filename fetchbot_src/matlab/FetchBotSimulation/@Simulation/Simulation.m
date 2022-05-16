@@ -1,3 +1,4 @@
+
 classdef Simulation < handle % Passes by reference
     %SIMULATION This class sets up the simulation in Matlab
     %   This class when constructed sets up the environment in matlab
@@ -155,6 +156,7 @@ classdef Simulation < handle % Passes by reference
             %obj.addWayPoint(obj.robotFetch, waypoint);
             %pause(2);
             waypoint2 = [0    0.9346    0.0698    1.5080   -0.3339    0.1255   -2.0972    1.2579];
+            
             %obj.addWayPoint(obj.robotFetch, waypoint);
             obj.MoveArm(waypoint1);
             pause(1);
@@ -254,7 +256,8 @@ classdef Simulation < handle % Passes by reference
                            disp("Moving Object to Recycling Bin");
                            qCurrent = obj.robotFetch.model.getpos;
                            %qBin =[qCurrent(1)  1.3200   -0.1495   -0.1256   -0.8292   -0.1258    0.8263    0.0012];
-                           qBin =[qCurrent(1)   1.4806   -0.0398    0.0000   -0.5591   -0.0001    1.5680    0.0012];
+                           %qBin =[qCurrent(1)   1.4806   -0.0398    0.0000   -0.5591   -0.0001    1.5680    0.0012];
+                           qBin =[qCurrent(1)   1.1240   -0.4682    3.5186   -0.0225   -0.6284   -0.6573   -0.1244];
                            obj.MoveArm(qBin);
                            
                         % let go
