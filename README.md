@@ -1,4 +1,54 @@
-# Compiling
+# Fetch Robot Pick and Place Project:
+
+The following repository is our submission for UTS subjects Sensors and Control as well as Industrial Robotics for 2022's Autumn Semester. In this project we elected to use the Fetch Robot  by Fetch robots, equipped with an 8 degrees of freedom between an articulating arm and telescopic base. We have directed it to pick up recyclables and place them in a nearby bin. This system could be used to assist in cleaning up spaces, such as universities and offices. Today we will be showing you the culmination of our efforts thus far, a series of simulations across Gazebo and Matlab.  
+
+![img](https://lh6.googleusercontent.com/oz3sGUbr1UsGmOAKAA_17awlf5aBOxg6vUMtEBVMs-2eEEUuUXvY8Z-8VpuBpdYuvlPCr8MMbb-4PMYvEIodPFUe3G02sSx3os3cG4_UhHUWEFJmgAaQXQRFFzA8sseMt_9BOWsN2U_i7wexNTNyGA)
+
+# Flow Chart
+
+![img](https://lh3.googleusercontent.com/ysrTmkzfFoSg76YpBh3lylrSTyDiXnj5atGTr-AAmeGbVgV-0iKnBamyhk_0xiG7IJa4GEtDI1aZz3SCdSEk-ix_BMWnsSyjDqPtLlE4YzxTP2MIFyRT44tM4PPTY8rOVaPEdoJuC6xpfcOX4FVbUg)
+
+# Individual Contributions
+
+Work in this Assignment was split up evenly. Here are the general areas each member worked on (contributions not limited to what's list because there was alot of overlap and collaboration in the team):
+
+- Isabel: Code documentation and organization, the environment in matlab and gazebo including safety considerations, Managing launch files for ROS, The GUI and E-stop. 
+- Ian: Matlab Arm movement and initialisation, Passive collision avoidance, Matlab and Ros messaging and integration including grapsing, GUI and E-stop functionality
+- Brendan: Object detection, Matlab and Ros Integration, RMRC and visual servoing, Managing launch files for ROS, Setting up and maintaining the repo
+
+# Requirements
+
+## OS and Software
+
+- Ubuntu 18.04
+- C++14
+- MATLAB
+- CMake (min version: 2.8.13)
+- ROS Melodic
+
+## ROS Packages
+
+- image_transport
+- cv_bridge
+- pcl_ros
+- geometry_msgs
+- sensor_msgs
+
+## C++ Libraries
+
+- roscpp
+- cv_bridge
+- OpenCV
+- pcl_ros
+- moveit_core
+- moveit_planning_ros_interface
+
+## MATLAB Addons
+
+- ROS Toolbox
+- Peter Corke's Robotics Toolbox (included in "matlab folder")
+
+# Compiling (c++)
 
 Create a build directory in the src file then initialise cmake:
 
@@ -6,6 +56,7 @@ Create a build directory in the src file then initialise cmake:
 mkdir build
 cd build
 cmake ..
+make
 ```
 
 # Linking to Catktin Workspace
@@ -23,7 +74,16 @@ cd catkin_ws/src
 ln -s SRC_DIRECTORY_HERE
 ```
 
+Compiling in Catkin Workspace:
+
+```
+catkin_make
+```
+
+
+
 # Adding ROS_IP and ROS_MASTER_URI to .bashrc
+
 To initialise ROS in MATLAB, the IP address of the machine running ROS is needed. As such, environment variable ROS_IP needs to be defined and exported to matlab using getenv("ROS_IP"). This ensures personal IP addresses are not hardcoded into MATLAB files and pushed into the repo. ROS_MASTER_URI is another environment variable that is used to set the location of ROS Master. In the file ".bashrc" add the following lines:
 
 ```
@@ -79,12 +139,4 @@ rosrun rviz rviz
 # Running the GUI via MATLAB
 
 
-
-# Individual Contributions
-
-Work in this Assignment was split up evenly. Here are the general areas each member worked on (contributions not limited to what's list because there was alot of overlap and collaboration in the team):
-
-- Isabel: Code documentation and organization, the environment in matlab and gazebo including safety considerations, Managing launch files for ROS, The GUI and E-stop. 
-- Ian: Matlab Arm movement and initialisation, Passive collision avoidance, Matlab and Ros messaging and integration including grapsing, GUI and E-stop functionality
-- Brendan: Object detection, Matlab and Ros Integration, RMRC and visual servoing, Managing launch files for ROS, Setting up and maintaining the repo
 
