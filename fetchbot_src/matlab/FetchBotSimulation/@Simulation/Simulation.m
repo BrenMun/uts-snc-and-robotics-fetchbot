@@ -8,64 +8,39 @@ classdef Simulation < handle % Passes by reference
         simulation
 
         %Objects
-        %robotUR3;
-        %robotUR5;
         robotFetch;
         environment;
         bricks = Brick.empty;% creates empty array
-
         objectNum;
         workspace;
         binPoint = []; 
         objectLocation;
         headCamera;
         trash_bin;
+        JointController
 
+        % end effector coordinates
         EE_X;
         EE_Y;
         EE_Z;
         currentQ;
 
-        % Variables
-        %tableTolerance = 0.5;
-        %brickWallPoses= zeros(9,3); 
-        %brickWallIndex = 1; 
-        %ur3Base; 
-        %ur5Base;
+        % object coordinates
         objectX; 
         objectY; 
         objectZ;
-        %trajSteps = 50; 
-        %wallX = [];
-        %wallY = [];
-        %wallZ = [];
-        steps; % for interpolation
-
         objectCarteason;
 
-        JointController
+        steps; % for interpolation
+       
+        
     end
 
     properties(Constant)
-        % Move to bin states
+        %Move to bin states
         LocateObject = 0; 
         MoveToObject = 1;
         MoveToBin = 2; 
-
-        % Cases for state machine
-%         LocateNextBrick = 0; 
-%         PickUpBrick = 1; 
-%         PlaceBrick = 2; 
-%         ReturnHome = 3; 
-%         Uknown = 4; 
-
-%         % Brick states for State Machine
-%         state = 0; 
-%         unmoved = 0;
-%         targeted = 1; 
-%         moving = 3; 
-%         moved = 4; 
-%         unknown = 5;
 
     end
 
@@ -127,7 +102,7 @@ classdef Simulation < handle % Passes by reference
 
         function checkCollisions(obj, robot) % simple function to check collisions from main
             q = obj.robotFetch.model.getpos;
-            result = IsCollision(robot,q,obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
+            %result = IsCollision(robot,q,obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
             if result == 1
                 disp(['Intersection at step ', num2str(i)]);
                 q;
@@ -167,7 +142,7 @@ classdef Simulation < handle % Passes by reference
             obj.robotFetch.steps = 1;
             result = true(obj.steps,1); % create logical vecter for results
             for i = 1: obj.steps
-                result(i) = IsCollision(obj.robotFetch,qMatrix(i,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
+                %result(i) = IsCollision(obj.robotFetch,qMatrix(i,:),obj.environment.tableFaces, obj.environment.tableVertices, obj.environment.tableFaceNormals ,false);
                 obj.robotFetch.model.animate(qMatrix(i,:));
                 drawnow();
                 obj.robotFetch.steps = obj.robotFetch.steps + 1;
@@ -230,6 +205,7 @@ classdef Simulation < handle % Passes by reference
                         end
                         obj.MoveArm(qMatrix(end,:));                 %move arm to target
                         obj.grip(0.0);                                      %grasp object
+                        pause(2); 
                         prevQ = qMatrix(end,:)
                         obj.MoveArm([qObject(1) prevQ(2) ...         %lift object
                             prevQ(3) prevQ(4) prevQ(5) ...
