@@ -1,12 +1,26 @@
 # Fetch Robot Pick and Place Project:
 
-The following repository is our submission for UTS subjects Sensors and Control as well as Industrial Robotics for 2022's Autumn Semester. In this project we elected to use the Fetch Robot  by Fetch robots, equipped with an 8 degrees of freedom between an articulating arm and telescopic base. We have directed it to pick up recyclables and place them in a nearby bin. This system could be used to assist in cleaning up spaces, such as universities and offices. Today we will be showing you the culmination of our efforts thus far, a series of simulations across Gazebo and Matlab.  
+The following repository is our submission for UTS subjects Sensors and Control as well as Industrial Robotics for 2022's Autumn Semester. In this project we elected to use the Fetch Robot by Fetch Robotics, equipped with an 8DOF arm and telescopic torso. We have directed it to pick up recyclables and place them in a nearby bin. This system could be used to assist in cleaning up spaces, such as universities and offices. Today we will be showing you the culmination of our efforts thus far, a series of simulations across Gazebo and Matlab.  
 
 ![img](https://lh6.googleusercontent.com/oz3sGUbr1UsGmOAKAA_17awlf5aBOxg6vUMtEBVMs-2eEEUuUXvY8Z-8VpuBpdYuvlPCr8MMbb-4PMYvEIodPFUe3G02sSx3os3cG4_UhHUWEFJmgAaQXQRFFzA8sseMt_9BOWsN2U_i7wexNTNyGA)
 
 # Flow Chart
 
 ![img](https://lh3.googleusercontent.com/ysrTmkzfFoSg76YpBh3lylrSTyDiXnj5atGTr-AAmeGbVgV-0iKnBamyhk_0xiG7IJa4GEtDI1aZz3SCdSEk-ix_BMWnsSyjDqPtLlE4YzxTP2MIFyRT44tM4PPTY8rOVaPEdoJuC6xpfcOX4FVbUg)
+
+# MATLAB GUI
+
+A GUI was designed in MATLAB's app designer. This allows the user to both controll the robot manually as well as execute the pick and place task. The GUI is run straight from MATLAB (for setting up the simulation scroll down to the setup instructions).
+
+### MOVEMENTS
+
+We have enabled the user to change specific joints of the robot, as well as control the cartesian movement of end effector
+
+### E STOP
+
+We utilised app functions uiwait and uiresume to configure our estop and resume buttonsThese work by blocking matlab and simulink program execution and simulink models, this worked as all our calculations are done matlab, including our ros integration
+
+![img](https://lh4.googleusercontent.com/SzYnTQEeSk-YCetZgGCmyUnAGYRKOSmLf1OHDHQPveFqGERMT75UettML-UfR4b14R8DvnyiHxR5W4wWmzrnowIdQJ8ocvrKPNShFzoOeq70Qa-mb6ltInw-RVxfG9KFsE9CyYFcvhr0M6vY7JlE2w)
 
 # Individual Contributions
 
@@ -16,19 +30,21 @@ Work in this Assignment was split up evenly. Here are the general areas each mem
 - Ian: Matlab Arm movement and initialisation, Passive collision avoidance, Matlab and Ros messaging and integration including grapsing, GUI and E-stop functionality
 - Brendan: Object detection, Matlab and Ros Integration, RMRC and visual servoing, Managing launch files for ROS, Setting up and maintaining the repo
 
-# Requirements
+# Setup Requirements
 
 ## OS and Software
 
 - Ubuntu 18.04
 - C++14
 - MATLAB
+- Gazebo9
 - CMake (min version: 2.8.13)
 - ROS Melodic
 
 ## ROS Packages
 
 - image_transport
+- fetch-gazebo-demo (and its dependencies)
 - cv_bridge
 - pcl_ros
 - geometry_msgs
@@ -47,6 +63,7 @@ Work in this Assignment was split up evenly. Here are the general areas each mem
 
 - ROS Toolbox
 - Peter Corke's Robotics Toolbox (included in "matlab folder")
+- App Designer
 
 # Compiling (c++)
 
@@ -79,8 +96,6 @@ Compiling in Catkin Workspace:
 ```
 catkin_make
 ```
-
-
 
 # Adding ROS_IP and ROS_MASTER_URI to .bashrc
 
@@ -135,8 +150,3 @@ rosrun rviz rviz
 - **Image:** press "add" and select "Image". From this go to Displays >> Image and select "/head_camera/rgb/image_raw" for Image Topic. This will show a raw image captured by the fetch's head camera in RVIZ.
 - **PointCloud2:** press "add" again and select PointCloud2. Under Displays >> PointCloud2 select either "/head_camera/depth_downsample/points" or ""/head_camera/depth_registered/points" for Topic. This will show the pointclouds detected by fetch's head camera in RVIZ.
 - **PointStamped:** to show the point published by the perception node, add PointStamped and select "/target_point" as the topic. Reduce the radius to 0.02 for a better view of the position. 
-
-# Running the GUI via MATLAB
-
-
-
