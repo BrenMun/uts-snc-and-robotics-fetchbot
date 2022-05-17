@@ -6,11 +6,13 @@ The following repository is our submission for UTS subjects Sensors and Control 
 
 # Flow Chart
 
+Here is a flow chart that outlines the general tasks that occur when running the project.
+
 ![img](https://lh3.googleusercontent.com/ysrTmkzfFoSg76YpBh3lylrSTyDiXnj5atGTr-AAmeGbVgV-0iKnBamyhk_0xiG7IJa4GEtDI1aZz3SCdSEk-ix_BMWnsSyjDqPtLlE4YzxTP2MIFyRT44tM4PPTY8rOVaPEdoJuC6xpfcOX4FVbUg)
 
 # MATLAB GUI
 
-A GUI was designed in MATLAB's app designer. This allows the user to both controll the robot manually as well as execute the pick and place task. The GUI is run straight from MATLAB (for setting up the simulation scroll down to the setup instructions).
+A GUI was designed in MATLAB's app designer. This allows the user to both control the robot manually as well as execute the pick and place task. The GUI is run straight from MATLAB (for setting up the simulation scroll down to the setup instructions).
 
 ### MOVEMENTS
 
@@ -18,7 +20,7 @@ We have enabled the user to change specific joints of the robot, as well as cont
 
 ### E STOP
 
-We utilised app functions uiwait and uiresume to configure our estop and resume buttons. These work by blocking matlab and simulink program execution and simulink models, this worked as all our calculations are done matlab, including our ros integration
+We utilised app functions uiwait and uiresume to configure our estop and resume buttons. These work by blocking matlab and simulink program execution and simulink models, this worked as all our calculations are done matlab, including our ros integration.
 
 ![img](https://lh4.googleusercontent.com/SzYnTQEeSk-YCetZgGCmyUnAGYRKOSmLf1OHDHQPveFqGERMT75UettML-UfR4b14R8DvnyiHxR5W4wWmzrnowIdQJ8ocvrKPNShFzoOeq70Qa-mb6ltInw-RVxfG9KFsE9CyYFcvhr0M6vY7JlE2w)
 
