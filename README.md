@@ -18,7 +18,7 @@ We have enabled the user to change specific joints of the robot, as well as cont
 
 ### E STOP
 
-We utilised app functions uiwait and uiresume to configure our estop and resume buttonsThese work by blocking matlab and simulink program execution and simulink models, this worked as all our calculations are done matlab, including our ros integration
+We utilised app functions uiwait and uiresume to configure our estop and resume buttons. These work by blocking matlab and simulink program execution and simulink models, this worked as all our calculations are done matlab, including our ros integration
 
 ![img](https://lh4.googleusercontent.com/SzYnTQEeSk-YCetZgGCmyUnAGYRKOSmLf1OHDHQPveFqGERMT75UettML-UfR4b14R8DvnyiHxR5W4wWmzrnowIdQJ8ocvrKPNShFzoOeq70Qa-mb6ltInw-RVxfG9KFsE9CyYFcvhr0M6vY7JlE2w)
 
