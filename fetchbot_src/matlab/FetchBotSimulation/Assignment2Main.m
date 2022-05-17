@@ -14,7 +14,7 @@ eStop = false;
 % Add starting Poses for Fetch Robot
 fetchBase = transl(0,0,0.7) *trotz(pi);
 
-% Creates object conenct to ROS node for head camera inform                              ation
+% Creates object conenct to ROS node for head camera information
 headCamera = RobotTemplateClass(getenv("ROS_IP"));
 
 % Generate the Simulation
