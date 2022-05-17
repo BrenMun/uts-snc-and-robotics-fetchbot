@@ -1,5 +1,29 @@
 %%
 % This script is for quick testing and fiddling. 
+%% main testing
+%% Teach for gui control
+simulation.teaching; 
+%% Get arms current position
+simulation.getPos()
+%% Test movement
+%qObject = [0    0.8219   -0.0780   -0.8516   -1.2403    1.0248   -1.4547    2.6003];
+%qObject = [0    0.9346    0.0698    1.5080   -0.3339    0.1255   -2.0972    1.2579];
+qObject = [0    1.4806   -0.0398    0.0000   -0.5591   -0.0001    1.5680    0.0012];
+simulation.MoveArm(qObject);
+%% Move to bin
+qObject =[0.0640    1.3200   -0.1495   -0.1256   -0.8292   -0.1258    0.8263    0.0012];
+simulation.MoveArm(qObject);
+%% check current pos for collisions with table
+simulation.checkCollisions(simulation.robotFetch);
+%% simulation reset
+qObject = simulation.robotFetch.qHome;
+simulation.MoveArm(qObject);
+%%
+simulation.getFkine();
+
+
+
+
 
 %% Working out UR3 Max Reach
 clf 
