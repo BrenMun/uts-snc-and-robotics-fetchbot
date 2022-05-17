@@ -37,44 +37,54 @@ export VM_IP = ip address of VM
 export ROS_IP = VM_IP
 ```
 
-# Running MATLAB Command Line
-In the terminal, the MATLAB command line can be run using the following command:
-
-```
-matlab -nosplash -nodesktop -sd /{git directory}/uts-snc-and-robotics-fetchbot/fetchbot_src
-```
-An extension can be added to VSCode for MATLAB language support. One specific extension "Matlab Code Run" allows the ability to run MATLAB files using
-Ctr+Shift+P and typing "Run Matlab file", which executes the following command:
-
-```
-matlab -nosplash -nodesktop -sd /{git directory}/uts-snc-and-robotics-fetchbot/fetchbot_src -r "run('./filename.m');"
-```
-
 # Running Fetch Simulation (Gazebo and RVIZ)
 
 ## Running the simulation
 
-Run the gazebo environment with the launch file created in this repo. It uses "simple_grasp.launch" (makes the simulated environment) and "move_group.launch" (used for controlling fetch), which are launch files from the "fetch_gazebo" and "fetch_moveit_config" packages.
+Run our Gazebo environment which is derived from Fetch Robotics "Simple Grasp" environment. It includes the default simple_grasp environment and also move_group.launch to control the robot.
 
 ``` 
 cd catkin_ws
 roslaunch fetchbot setupFetchSim.launch
 ```
+## Loading Our Models in the Simulator
+
+To load the bin and other objects into our model, first extract the file "fetch_world.zip" into your catkin workspace src directory. From this, open "~/.bashrc" and include the following path:
+
+```
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/(your catkin workspace )/src/fetch_world/models
+```
+
+This will then allow setupFetchSim.launch to completely load our playground.
+
+## Running Perception Node
+
 Run perception node for subscribing to image and point cloud msgs then publishing the target position.
 
 ```
 rosrun fetchbot perception
 ```
 
-Run RVIZ to visualise sensing data:
+## Showing Sensing Data in RVIZ (Optional)
 
 ```
 rosrun rviz rviz
 ```
 
-## Showing Sensing Data in RVIZ
-
 - **RobotModel:** Displays >> global options, set Fixed Frame to "torso_fixed_link" or "base_link" depending what you want set at origin. Then press "add" and select "RobotModel"
 - **Image:** press "add" and select "Image". From this go to Displays >> Image and select "/head_camera/rgb/image_raw" for Image Topic. This will show a raw image captured by the fetch's head camera in RVIZ.
 - **PointCloud2:** press "add" again and select PointCloud2. Under Displays >> PointCloud2 select either "/head_camera/depth_downsample/points" or ""/head_camera/depth_registered/points" for Topic. This will show the pointclouds detected by fetch's head camera in RVIZ.
+- **PointStamped:** to show the point published by the perception node, add PointStamped and select "/target_point" as the topic. Reduce the radius to 0.02 for a better view of the position. 
+
+# Running the GUI via MATLAB
+
+
+
+# Individual Contributions
+
+Work in this Assignment was split up evenly. Here are the general areas each member worked on (contributions not limited to what's list because there was alot of overlap and collaboration in the team):
+
+- Isabel: Code documentation and organization, the environment in matlab and gazebo including safety considerations, Managing launch files for ROS, The GUI and E-stop. 
+- Ian: Matlab Arm movement and initialisation, Passive collision avoidance, Matlab and Ros messaging and integration including grapsing, GUI and E-stop functionality
+- Brendan: Object detection, Matlab and Ros Integration, RMRC and visual servoing, Managing launch files for ROS, Setting up and maintaining the repo
 
