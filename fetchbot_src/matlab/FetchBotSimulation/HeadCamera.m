@@ -1,3 +1,4 @@
+% THIS CLASS IS UNUSED. WAS GOING TO REPLACE C++ NODE
 classdef HeadCamera
     properties
         % ROS publishers and subscribers
