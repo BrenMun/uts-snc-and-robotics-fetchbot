@@ -1,6 +1,6 @@
 # Fetch Robot Pick and Place Project:
 
-The following repository is our submission for UTS subjects Sensors and Control as well as Industrial Robotics for 2022's Autumn Semester. In this project we elected to use the Fetch Robot by Fetch Robotics, equipped with an 8DOF arm and telescopic torso. We have directed it to pick up recyclables and place them in a nearby bin. This system could be used to assist in cleaning up spaces, such as universities and offices. Today we will be showing you the culmination of our efforts thus far, a series of simulations across Gazebo and Matlab.  
+The following repository is our submission for UTS subjects Sensors and Control as well as Industrial Robotics for 2022's Autumn Semester. In this project we elected to use the Fetch Robot by Fetch Robotics, equipped with an 7DOF arm and telescopic torso. We have directed it to pick up recyclables and place them in a nearby bin. This system could be used to assist in cleaning up spaces, such as universities and offices. This reademe will go through the culmination of our efforts thus far, a series of simulations across Gazebo and Matlab.  
 
 ![img](https://lh6.googleusercontent.com/oz3sGUbr1UsGmOAKAA_17awlf5aBOxg6vUMtEBVMs-2eEEUuUXvY8Z-8VpuBpdYuvlPCr8MMbb-4PMYvEIodPFUe3G02sSx3os3cG4_UhHUWEFJmgAaQXQRFFzA8sseMt_9BOWsN2U_i7wexNTNyGA)
 
